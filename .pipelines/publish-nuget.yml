@@ -1,0 +1,31 @@
+parameters:
+  - name: package
+    type: string
+  - name: dependsOn
+    type: string
+
+jobs:
+  - job:
+    displayName: 'Publish ${{ parameters.package }}'
+    dependsOn: ${{ parameters.dependsOn }}
+    pool:
+      vmImage: 'windows-latest'
+
+    steps:
+    - checkout: none    
+    - download: current
+      artifact: nuget
+      patterns: '**/${{ parameters.package }}'
+
+    - script: nuget locals all -clear
+      displayName: 'Clear NuGet credentials cache'
+    
+    - task: NuGetAuthenticate@1
+      displayName: 'NuGet Authenticate'
+    
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish NuGet Package'
+      inputs:
+        command: 'push'
+        packagesToPush: '$(Pipeline.Workspace)/nuget/*.nupkg'
+        feedPublish: 'RamseySolutions'

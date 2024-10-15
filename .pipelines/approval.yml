@@ -1,0 +1,24 @@
+parameters:
+  - name: platform
+    displayName: 'Artifact to build'
+    values:
+      - Android
+      - iOS
+      - CrossPlatform
+  - name: approvalTimeout
+    displayName: 'Approval Timeout'
+    type: number
+    default: 4320
+    
+jobs:
+- job: approve${{ parameters.platform }}
+  displayName: Approve Release
+  pool: server
+  timeoutInMinutes: ${{ parameters.approvalTimeout }}
+  steps:
+    - task: ManualValidation@0
+      timeoutInMinutes: ${{ parameters.approvalTimeout }}
+      inputs:
+        notifyUsers: ''
+        instructions: 'Approve the NuGet package for release.'
+        onTimeout: 'reject'

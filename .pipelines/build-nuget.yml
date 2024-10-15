@@ -1,0 +1,53 @@
+parameters:
+  - name: artifact
+    displayName: 'Artifact to build'
+    values:
+      - Bugsnag.Android
+      - Bugsnag.iOS
+      - Bugsnag
+    
+jobs:
+  - job:
+    pool:
+      vmImage: 'macos-latest'
+
+    workspace:
+      clean: all
+
+    steps:
+    - script: |
+        dotnet workload install maui-mobile android ios --source https://api.nuget.org/v3/index.json
+        dotnet workload list
+      displayName: Restore Workloads
+
+    - task: NuGetAuthenticate@1
+      displayName: 'NuGet Authenticate'
+
+    # Build the solution.
+    - task: DotNetCoreCLI@2
+      displayName: 'Build ${{ parameters.artifact }}'
+      inputs:        
+        command: 'build'
+        projects: '**/${{ parameters.artifact }}.csproj'
+        feedsToUse: 'config'
+        nugetConfigPath: 'nuget.config'
+        arguments: '--configuration Release --nologo -p:OfficialBuildNumber=$(Build.BuildNumber)'
+
+    # Build the NuGet package.
+    - task: DotNetCoreCLI@2
+      displayName: 'Build NuGet package'
+      inputs:
+        command: pack
+        packagesToPack: '**/${{ parameters.artifact }}.csproj'
+        nobuild: true
+        configuration: Release
+        buildProperties: 'OfficialBuildNumber=$(Build.BuildNumber)'
+        verbosityPack: Normal
+        packDirectory: '$(Build.ArtifactStagingDirectory)'
+
+    # Publish the NuGet package to the Azure Pipeline.
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'nuget'
+        publishLocation: 'Container'

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SampleApp.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30,0" Spacing="25">
+            <Image
+                Aspect="AspectFit"
+                HeightRequest="185"
+                SemanticProperties.Description="dot net bot in a race car number eight"
+                Source="dotnet_bot.png" />
+
+            <Label Style="{StaticResource SubHeadline}" Text="Enter Connect Url" />
+
+            <Entry x:Name="ConnectUrl" />
+
+            <Button
+                Clicked="OnConnectClicked"
+                HorizontalOptions="Fill"
+                Text="Click me to Connect" />
+
+            <Label
+                SemanticProperties.HeadingLevel="Level1"
+                Style="{StaticResource SubHeadline}"
+                Text="Result:"
+                x:Name="resultLabel" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

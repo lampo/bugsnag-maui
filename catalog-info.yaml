@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: mastercard-connect-sdk-maui
+  annotations:
+    github.com/project-slug: lampo/mastercard-connect-sdk-maui
+spec:
+  type: library
+  lifecycle: production
+  system: everydollar
+  owner: ramsey-plus

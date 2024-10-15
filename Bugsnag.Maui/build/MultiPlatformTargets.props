@@ -1,0 +1,68 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <TargetPlatformIdentifier>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</TargetPlatformIdentifier>
+        <NoTargetPlatform>false</NoTargetPlatform>
+        <NoTargetPlatform Condition="'$(TargetPlatformIdentifier)' == ''">True</NoTargetPlatform>
+        <TargetPlatformIsAndroid>false</TargetPlatformIsAndroid>
+        <TargetPlatformIsAndroid Condition="'$(TargetPlatformIdentifier)' == 'android'">True</TargetPlatformIsAndroid>
+        <TargetPlatformIsiOS>false</TargetPlatformIsiOS>
+        <TargetPlatformIsiOS Condition="'$(TargetPlatformIdentifier)' == 'ios'">True</TargetPlatformIsiOS>
+    </PropertyGroup>
+    
+    <ItemGroup Condition=" '$(TargetPlatformIsiOS)' == 'True' ">
+        <Compile Update="**\**\*.ios.cs">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ios', '.cs'))</DependentUpon>
+        </Compile>
+        <Compile Update="**\**\*.xaml.ios.cs">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ios', ''))</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetPlatformIsiOS)' != 'True' ">
+        <Compile Remove="**\**\*.ios.cs" />
+        <None Include="**\**\*.ios.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ios', '.cs'))</DependentUpon>
+        </None>
+        <None Include="**\**\*.xaml.ios.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ios', ''))</DependentUpon>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetPlatformIsAndroid)' == 'True' ">
+        <Compile Update="**\**\*.android.cs">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.android', '.cs'))</DependentUpon>
+        </Compile>
+        <Compile Update="**\**\*.xaml.android.cs">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.android', ''))</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetPlatformIsAndroid)' != 'True' ">
+        <Compile Remove="**\**\*.android.cs" />
+        <None Include="**\**\*.android.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.android', '.cs'))</DependentUpon>
+        </None>
+        <None Include="**\**\*.xaml.android.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.android', ''))</DependentUpon>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(NoTargetPlatform)' == 'True' ">
+        <Compile Update="**\**\*.standard.cs">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.standard', '.cs'))</DependentUpon>
+        </Compile>
+        <Compile Update="**\**\*.xaml.standard.cs">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.standard', ''))</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(NoTargetPlatform)' != 'True' ">
+        <Compile Remove="**\**\*.standard.cs" />
+        <None Include="**\**\*.standard.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.standard', '.cs'))</DependentUpon>
+        </None>
+        <None Include="**\**\*.xaml.standard.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)">
+            <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.standard', ''))</DependentUpon>
+        </None>
+    </ItemGroup>
+</Project>

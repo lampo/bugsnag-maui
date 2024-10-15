@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0-ios</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>true</ImplicitUsings>
+        <IsBindingProject>true</IsBindingProject>
+        <IsTrimmable>false</IsTrimmable>
+        <RootNamespace>Bugsnag.iOS</RootNamespace>
+          <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <TargetPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">17.5</TargetPlatformVersion>
+        
+        <Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.swift-sdk-version').Trim()).3</Version>
+        <Authors>Zach Dean</Authors>
+        <Company>Ramsey Solutions</Company>
+        <Copyright>Copyright Ramsey Solutions. All rights reserved.</Copyright>
+        <RepositoryType>GitHub</RepositoryType>
+        <PackageProjectUrl>https://github.com/lampo/mastercard-connect-sdk-maui</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/lampo/mastercard-connect-sdk-maui</RepositoryUrl>
+        <PackageTags>mastercard connect maui</PackageTags>
+        <Authors>Zach Dean</Authors>
+    </PropertyGroup>
+
+    <Target Name="Check XCFramework" BeforeTargets="_BuildXcodeProjectsForiOS">
+        <Message Text="Check Native Libraries" Importance="high" />
+        <!-- <Exec
+                Command="[[ ! -d '../native/BugsnagBinding/Bugsnag.xcframework' ]] &amp;&amp; '../scripts/download-xcframeworks.sh' || '../scripts/check-xcframeworks.sh'"
+                Condition=" '$(OS)' != 'Windows_NT' "
+        /> -->
+        <Error Condition=" '$(OS)' == 'Windows_NT' " Text="Building on Windows is not supported." />
+    </Target>
+
+    <ItemGroup>
+        <ObjcBindingApiDefinition Include="ApiDefinitions.cs" />
+        <ObjcBindingCoreSource Include="StructsAndEnums.cs" />
+    </ItemGroup>
+
+    <!-- Reference to Xcode project -->
+    <ItemGroup>
+        <NLIXcodeProjectReference Include="../native/BugsnagBinding/BugsnagBinding.xcodeproj">
+            <SchemeName>BugsnagBinding</SchemeName>
+            <SharpieNamespace>Bugsnag.iOS</SharpieNamespace>
+            <SharpieBind>true</SharpieBind>
+        </NLIXcodeProjectReference>
+        
+        <NativeReference
+            Include="../native/BugsnagBinding/Bugsnag.xcframework" >
+            <Kind>Framework</Kind>
+            <Smartlink>false</Smartlink>
+        </NativeReference>
+
+        <NativeReference
+            Include="../native/BugsnagBinding/BugsnagNetworkRequestPlugin.xcframework" >
+            <Kind>Framework</Kind>
+            <Smartlink>false</Smartlink>
+        </NativeReference>
+    </ItemGroup>
+
+    <!-- Reference to NuGet for building bindings -->
+    <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Maui.NativeLibraryInterop.BuildTasks" Version="0.0.1-pre1" PrivateAssets="all" />
+    </ItemGroup>
+</Project>

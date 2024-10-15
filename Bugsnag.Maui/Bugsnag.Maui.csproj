@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net8.0-android;net8.0-ios</TargetFrameworks>
+        <UseMaui>true</UseMaui>
+        <SingleProject>true</SingleProject>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <MauiVersion>8.0.80</MauiVersion>
+        <IsTrimmable>true</IsTrimmable>
+
+
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.0</SupportedOSPlatformVersion>
+        <TargetPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">17.5</TargetPlatformVersion>
+
+        <PackageVersion>$(OfficialBuildNumber)</PackageVersion>
+
+        <!-- Box the binding version to be [major.0,major+1.1), example [3.0,4.0) which will prevent package 4.0+ from being used -->
+        <ConnectSDKiOSVersion>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.swift-sdk-version').Substring(0,1))</ConnectSDKiOSVersion>
+        <ConnectSDKiOSVersion>[$(ConnectSDKiOSVersion).0,$([MSBuild]::Add($(ConnectSDKiOSVersion), 1)).0)</ConnectSDKiOSVersion>
+
+        <ConnectSDKAndroidVersion>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.maven-sdk-version').Substring(0,1))</ConnectSDKAndroidVersion>
+        <ConnectSDKAndroidVersion>[$(ConnectSDKAndroidVersion).0,$([MSBuild]::Add($(ConnectSDKAndroidVersion), 1)).0)</ConnectSDKAndroidVersion>
+        
+        <Description>Dotnet MAUI wrapper for the Bugsnag</Description>
+        <Authors>Zach Dean</Authors>
+        <Company>Ramsey Solutions</Company>
+        <Copyright>Copyright Ramsey Solutions. All rights reserved.</Copyright>
+        <RepositoryType>GitHub</RepositoryType>
+        <PackageProjectUrl>https://github.com/lampo/mastercard-connect-sdk-maui</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/lampo/mastercard-connect-sdk-maui</RepositoryUrl>
+        <PackageTags>mastercard connect maui</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
+    </ItemGroup>
+
+        <!-- point to local projects in debug -->
+    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND $(Configuration) == 'Debug'">
+        <ProjectReference Include="..\Bugsnag.Android\Bugsnag.Android.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' AND $(Configuration) == 'Debug'">
+        <ProjectReference Include="..\Bugsnag.iOS\Bugsnag.iOS.csproj"/>
+    </ItemGroup>
+
+    <!-- point to nugetss in release -->
+    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND $(Configuration) != 'Debug'">
+        <PackageReference Include="Bugsnag.Android" Version="$(ConnectSDKAndroidVersion)"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' AND $(Configuration) != 'Debug'">
+        <PackageReference Include="Bugsnag.iOS" Version="$(ConnectSDKiOSVersion)"/>
+    </ItemGroup>
+
+    <!-- Add multi platform -->
+    <Import Project="./build/MultiPlatformTargets.props"/>
+</Project>

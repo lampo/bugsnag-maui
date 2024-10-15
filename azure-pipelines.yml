@@ -1,0 +1,84 @@
+#
+# Gated Pipeline
+#
+# This pipeline gets run when a pull request is opened against the master
+# branch from any project.
+#
+name: '3.0.$(date:yyMM).$(date:dd)$(rev:rrr)'
+
+trigger: none
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - '**/*'
+    exclude:
+    - 'README.md'
+variables:
+  approvalTimeout: 4320 # 3 days
+
+stages:
+  - stage: BuildAndroid
+    dependsOn: []
+    displayName: 'Build Android Binding'
+    jobs:
+      - template: .pipelines/build-nuget.yml
+        parameters:
+          artifact: 'Bugsnag.Android'
+  
+  - stage: PublishAndroid    
+    displayName: 'Publish Android Binding'
+    dependsOn: BuildAndroid
+    jobs:
+      - template: .pipelines/approval.yml
+        parameters:
+          platform: 'Android'
+
+      - template: .pipelines/publish-nuget.yml
+        parameters:
+          package: 'Bugsnag.*.nupkg'
+          dependsOn: approveAndroid
+  
+  - stage: BuildiOS
+    displayName: 'Build iOS Binding'
+    dependsOn: []
+    jobs:
+      - template: .pipelines/build-nuget.yml
+        parameters:
+          artifact: 'Bugsnag.iOS'
+
+  - stage: PublishiOS
+    displayName: 'Publish iOS Binding'
+    dependsOn: BuildiOS
+    jobs:
+      - template: .pipelines/approval.yml
+        parameters:
+          platform: 'iOS'
+
+      - template: .pipelines/publish-nuget.yml
+        parameters:
+          package: 'Bugsnag.iOS.*.nupkg'
+          dependsOn: approveiOS
+
+  - stage: 'BuildCrossPlatform'
+    displayName: 'Build Cross Platform Library'
+    dependsOn: []
+    jobs:
+      - template: .pipelines/build-nuget.yml
+        parameters:
+          artifact: 'Bugsnag'
+
+  - stage: 'PublishCrossPlatform'
+    displayName: 'Publish Cross Platform Library'
+    dependsOn: 'BuildCrossPlatform'
+    jobs:
+      - template: .pipelines/approval.yml
+        parameters:
+          platform: 'CrossPlatform'
+
+      - template: .pipelines/publish-nuget.yml
+        parameters:
+          package: 'Bugsnag.Maui.nupkg;!*Android*;!*iOS*;'
+          dependsOn: approveCrossPlatform

@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CheckMavenArtifact">
+	<PropertyGroup>
+		<TargetFramework>net8.0-android34</TargetFramework>
+		<SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>Bugsnag.Android</RootNamespace>
+		
+		<Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.maven-sdk-version').Trim()).1</Version>
+		<Authors>Zach Dean</Authors>
+        <Company>Ramsey Solutions</Company>
+        <Copyright>Copyright Ramsey Solutions. All rights reserved.</Copyright>
+        <RepositoryType>GitHub</RepositoryType>
+        <PackageProjectUrl>https://github.com/lampo/mastercard-connect-sdk-maui</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/lampo/mastercard-connect-sdk-maui</RepositoryUrl>
+		<PackageTags>mastercard connect maui</PackageTags>
+		<Authors>Zach Dean</Authors>
+	</PropertyGroup>
+
+	<Target Name="CheckMavenArtifact" BeforeTargets="Build">
+		<Message Text="$(pwd)" Importance="high" />
+		<Exec
+				Command="[[ ! -d 'Native' ]] &amp;&amp; ../scripts/download-maven.sh || ../scripts/check-maven.sh"
+				Condition=" '$(OS)' != 'Windows_NT' "
+		/>
+		<Exec
+			Command="powershell -Command &quot;if (!(Test-Path 'Native')) { ..\scripts\download-maven.ps1 } else { ..\scripts\check-maven.ps1 }&quot;"
+			Condition=" '$(OS)' == 'Windows_NT' "
+		/>
+	</Target>
+</Project>
