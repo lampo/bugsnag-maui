@@ -16,6 +16,24 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 # Parameters
 SWIFT_SDK_VERSION=${1:-$(cat "$SCRIPT_DIR/../.swift-sdk-version")}
 
+# Function to download and copy xcframework
+download_and_copy_xcframework() {
+  local module=$1
+  local moduleDir=$2
+
+  echo "→ Downloading $module prebuilt artifacts (version $SWIFT_SDK_VERSION)"
+  curl -L -o "$module.xcframework.zip" "https://github.com/bugsnag/bugsnag-cocoa/releases/download/v$SWIFT_SDK_VERSION/$module.xcframework.zip"
+
+  echo "→ Unzipping $module prebuilt artifacts"
+  unzip -q "$module.xcframework.zip" -d artifacts
+  rm "$module.xcframework.zip"
+
+  echo "→ Copying $module dynamic xcframework"
+  rm -rf "$moduleDir/$module.xcframework"
+  mkdir -p "$moduleDir"
+  cp -rf "artifacts/$module.xcframework" "$moduleDir"
+}
+
 # Main
 cd "$SCRIPT_DIR"
 
@@ -25,39 +43,11 @@ if [ -d "artifacts" ] || [ -f "artifacts.zip" ]; then
   rm -rf artifacts artifacts.zip
 fi
 
-# - Download prebuilt artifacts
-echo "→ Downloading Swift SDK prebuilt artifacts (version $SWIFT_SDK_VERSION)"
-curl -L -o Bugsnag.xcframework.zip https://github.com/bugsnag/bugsnag-cocoa/releases/download/v$SWIFT_SDK_VERSION/Bugsnag.xcframework.zip
-curl -L -o BugsnagNetworkRequestPlugin.xcframework.zip https://github.com/bugsnag/bugsnag-cocoa/releases/download/v$SWIFT_SDK_VERSION/BugsnagNetworkRequestPlugin.xcframework.zip
+# - Download and copy xcframeworks
+download_and_copy_xcframework "Bugsnag" "$SCRIPT_DIR/../native/BugsnagBinding/"
+download_and_copy_xcframework "BugsnagNetworkRequestPlugin" "$SCRIPT_DIR/../native/BugsnagBinding/"
 
-
-# - Unzip prebuilt artifacts
-echo "→ Unzipping prebuilt artifacts"
-unzip -q Bugsnag.xcframework.zip -d artifacts
-rm Bugsnag.xcframework.zip
-
-unzip -q BugsnagNetworkRequestPlugin.xcframework.zip -d artifacts
-rm BugsnagNetworkRequestPlugin.xcframework.zip
-
-# - Copy dynamic xcframeworks to corresponding module directories
-echo "→ Copying dynamic xcframeworks"
-
-MODULE="Bugsnag"
-moduleDir="$SCRIPT_DIR/../native/BugsnagBinding/"
-
-
-echo "  · $MODULE"
-rm -rf "$moduleDir/$MODULE.xcframework"
-mkdir -p "$moduleDir"
-cp -rf "artifacts/$MODULE.xcframework" "$moduleDir"
-
-MODULE="BugsnagNetworkRequestPlugin"
-echo "  · $MODULE"
-rm -rf "$moduleDir/$MODULE.xcframework"
-mkdir -p "$moduleDir"
-cp -rf "artifacts/$MODULE.xcframework" "$moduleDir"
-
-echo "$SWIFT_SDK_VERSION" >"$moduleDir/.swift-sdk-version"
+echo "$SWIFT_SDK_VERSION" >"$SCRIPT_DIR/../native/BugsnagBinding/.swift-sdk-version"
 
 # - Cleanup run
 echo "→ Cleaning up"

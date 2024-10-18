@@ -1,6 +1,5 @@
 ﻿using Android.App;
 using Android.Content.PM;
-using Android.OS;
 
 namespace SampleApp
 {
@@ -15,7 +14,5 @@ namespace SampleApp
             | ConfigChanges.SmallestScreenSize
             | ConfigChanges.Density
     )]
-    public class MainActivity : MauiAppCompatActivity
-    {
-    }
+    public class MainActivity : MauiAppCompatActivity { }
 }

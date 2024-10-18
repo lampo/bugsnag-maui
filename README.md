@@ -1,4 +1,4 @@
-# mastercard-connect-sdk-maui
+# bugsnag-maui
 Binding library for the MasterCard Connect SDK It consists of a android and ios binding and a cross platform sdk to consume the bindings.
 
 ## Installation

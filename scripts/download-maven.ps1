@@ -1,33 +1,49 @@
+# Get the script location
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+
 # Get the version from the .sdk-version file
-$version = Get-Content ../.maven-sdk-version
+$version = Get-Content $scriptDir/../.maven-sdk-version
 
 # Define the Maven group, artifact, and type
-$group = "com.mastercard.openbanking.connect"
-$artifact = "connect-sdk"
-$type = "aar"
+$group = "com.bugsnag"
+$outputDirectory = "$scriptDir/../Bugsnag.Android/Native"
 
 # Replace . in group with / for the URL
 $groupUrl = $group -replace "\.", "/"
 
-# Define the URL to download the AAR from
-$url = "https://repo1.maven.org/maven2/$groupUrl/$artifact/$version/$artifact-$version.$type"
-
-Write-Output "Downloading $artifact-$version.$type from $url"
-
-# Define the output directory and file
-$outputDir = "../Bugsnag.Android/Native"
-$outputFile = "$outputDir/$artifact-$version.$type"
-
 # Create the output directory if it doesn't exist
-if (Test-Path $outputDir) {
-    Remove-Item "$outputDir/*" -Recurse -Force
+if (Test-Path $outputDirectory) {
+    Remove-Item "$outputDirectory/*" -Recurse -Force
 } else {
     New-Item -ItemType Directory -Path $outputDir -Force
 }
 
-# Download the AAR file
-Invoke-WebRequest -Uri $url -OutFile $outputFile
+function Get-AAR {
+    param (
+        [string]$groupUrl,
+        [string]$artifact,
+        [string]$version,
+        [string]$type,
+        [string]$outputDir
+    )
 
-Write-Output "Downloaded $artifact-$version.$type to $outputFile"
+    # Define the URL to download the AAR from
+    $url = "https://repo1.maven.org/maven2/$groupUrl/$artifact/$version/$artifact-$version.$type"
+
+    # Define the output file
+    $outputFile = "$outputDir/$artifact-$version.$type"
+    
+    Write-Output "Downloading $artifact-$version.$type from $url"  
+
+    # Download the AAR file
+    Invoke-WebRequest -Uri $url -OutFile $outputFile
+
+    Write-Output "Downloaded $artifact-$version.$type to $outputFile"
+}
+
+# Call the function
+Get-AAR -groupUrl $groupUrl -artifact "bugsnag-android-core" -version $version -type "aar" -outputDir $outputDirectory
+Get-AAR -groupUrl $groupUrl -artifact "bugsnag-plugin-android-anr" -version $version -type "aar" -outputDir $outputDirectory
+Get-AAR -groupUrl $groupUrl -artifact "bugsnag-plugin-android-ndk" -version $version -type "aar" -outputDir $outputDirectory
 
 Set-Content -Path "../Bugsnag.Android/.maven-sdk-version" -Value $version

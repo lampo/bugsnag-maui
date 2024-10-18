@@ -5,9 +5,10 @@ import UIKit
 
 @objc public class DotnetBugsnagBinding : NSObject {
         
-    @objc public static func start() {
+    @objc public static func start(with releaseStage: String) {
         let config = BugsnagConfiguration.loadConfig()
         config.launchDurationMillis = 0
+        config.releaseStage = releaseStage
         config.add(BugsnagNetworkRequestPlugin())
         Bugsnag.start(with: config)
     }

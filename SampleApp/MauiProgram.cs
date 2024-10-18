@@ -1,4 +1,4 @@
-﻿using Bugsnag;
+﻿using Bugsnag.Maui;
 using Microsoft.Extensions.Logging;
 
 namespace SampleApp
@@ -10,7 +10,7 @@ namespace SampleApp
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseMasterCardConnect()
+                .UseBugsnag(ReleaseStage.Local, "4fa1861e2c0ed84146c19c8cf248a53a")
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -18,8 +18,10 @@ namespace SampleApp
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
+
+            builder.Services.AddTransient<MainPage>();
 
             return builder.Build();
         }

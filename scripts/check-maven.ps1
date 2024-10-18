@@ -8,7 +8,7 @@
 ###################################################################################################
 
 # Constants
-$SCRIPT_DIR = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
+$SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 $DESIRED_MAVEN_SDK_VERSION = Get-Content "$SCRIPT_DIR\..\.maven-sdk-version"
 
 if (Test-Path .\.maven-sdk-version) {

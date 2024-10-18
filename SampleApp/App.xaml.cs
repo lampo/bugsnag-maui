@@ -1,12 +1,13 @@
-﻿namespace SampleApp
-{
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
+﻿using Bugsnag.Maui;
 
-            MainPage = new AppShell();
-        }
+namespace SampleApp;
+
+public partial class App : Application
+{
+    public App()
+    {
+        InitializeComponent();
+
+        MainPage = new AppShell();
     }
 }

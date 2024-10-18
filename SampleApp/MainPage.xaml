@@ -12,20 +12,26 @@
                 SemanticProperties.Description="dot net bot in a race car number eight"
                 Source="dotnet_bot.png" />
 
-            <Label Style="{StaticResource SubHeadline}" Text="Enter Connect Url" />
-
-            <Entry x:Name="ConnectUrl" />
+            <Button
+                Clicked="OnCrashClicked"
+                HorizontalOptions="Fill"
+                Text="Click me to Crash" />
 
             <Button
-                Clicked="OnConnectClicked"
+                Clicked="OnErrorClicked"
                 HorizontalOptions="Fill"
-                Text="Click me to Connect" />
+                Text="Click me to Report Error" />
+            
+            <Button
+                Clicked="OnNestedErrorClicked"
+                HorizontalOptions="Fill"
+                Text="Click me to Report Nested Error" />
 
-            <Label
-                SemanticProperties.HeadingLevel="Level1"
-                Style="{StaticResource SubHeadline}"
-                Text="Result:"
-                x:Name="resultLabel" />
+            <Button
+                Clicked="OnBreadcrumbClicked"
+                HorizontalOptions="Fill"
+                Text="Click me to LEave Breadcrumb" />
+
         </VerticalStackLayout>
     </ScrollView>
 

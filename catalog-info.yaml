@@ -1,9 +1,9 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: mastercard-connect-sdk-maui
+  name: bugsnag-maui
   annotations:
-    github.com/project-slug: lampo/mastercard-connect-sdk-maui
+    github.com/project-slug: lampo/bugsnag-maui
 spec:
   type: library
   lifecycle: production
