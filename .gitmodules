@@ -1,0 +1,3 @@
+[submodule "native/BugsnagBinding/bugsnag-cocoa"]
+	path = native/BugsnagBinding/bugsnag-cocoa
+	url = https://github.com/bugsnag/bugsnag-cocoa

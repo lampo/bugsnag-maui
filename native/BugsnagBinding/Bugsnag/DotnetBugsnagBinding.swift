@@ -48,4 +48,12 @@ import UIKit
     @objc public static func leaveBreadcrumb(with message: String, with metadata: [AnyHashable : Any] ) {
         Bugsnag.leaveBreadcrumb(message, metadata: metadata, type: .state)
     }
+    
+    @objc public static func createEvent(with error: NSDictionary) {
+        
+    }
+    
+    @objc public static func deliverEvent(with event: BugsnagEvent){
+        Bugsnag.client.notifyInternal(event, block: nil)
+    }
 }

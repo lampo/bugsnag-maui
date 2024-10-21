@@ -7,15 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6944D3572CBD77C4006AC5BB /* BugsnagNetworkRequestPlugin.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6944D3562CBD77C3006AC5BB /* BugsnagNetworkRequestPlugin.xcframework */; };
-		696A2ABC2C9CAD76003A37BB /* Bugsnag.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 696A2ABA2C9C7E0A003A37BB /* Bugsnag.xcframework */; };
+		695AD30B2CC6789D00236F89 /* BugsnagInternalsWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 695AD30A2CC6789D00236F89 /* BugsnagInternalsWrapper.m */; };
 		83E34F572C21CB2B008AA950 /* BugsnagBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 83E34F562C21CB2B008AA950 /* BugsnagBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		83E34F5E2C21CC53008AA950 /* DotnetBugsnagBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E34F5D2C21CC53008AA950 /* DotnetBugsnagBinding.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6944D3562CBD77C3006AC5BB /* BugsnagNetworkRequestPlugin.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = BugsnagNetworkRequestPlugin.xcframework; sourceTree = "<group>"; };
-		696A2ABA2C9C7E0A003A37BB /* Bugsnag.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Bugsnag.xcframework; sourceTree = SOURCE_ROOT; };
+		695AD30A2CC6789D00236F89 /* BugsnagInternalsWrapper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagInternalsWrapper.m; sourceTree = "<group>"; };
 		83E34F532C21CB2B008AA950 /* BugsnagBinding.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagBinding.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83E34F562C21CB2B008AA950 /* BugsnagBinding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagBinding.h; sourceTree = "<group>"; };
 		83E34F5D2C21CC53008AA950 /* DotnetBugsnagBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotnetBugsnagBinding.swift; sourceTree = "<group>"; };
@@ -26,29 +24,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				696A2ABC2C9CAD76003A37BB /* Bugsnag.xcframework in Frameworks */,
-				6944D3572CBD77C4006AC5BB /* BugsnagNetworkRequestPlugin.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6944D3552CBD77C3006AC5BB /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				6944D3562CBD77C3006AC5BB /* BugsnagNetworkRequestPlugin.xcframework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		83E34F492C21CB2B008AA950 = {
 			isa = PBXGroup;
 			children = (
-				696A2ABA2C9C7E0A003A37BB /* Bugsnag.xcframework */,
-				83E34F552C21CB2B008AA950 /* BugsnagBinding */,
+				83E34F552C21CB2B008AA950 /* Bugsnag */,
 				83E34F542C21CB2B008AA950 /* Products */,
-				6944D3552CBD77C3006AC5BB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,13 +46,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		83E34F552C21CB2B008AA950 /* BugsnagBinding */ = {
+		83E34F552C21CB2B008AA950 /* Bugsnag */ = {
 			isa = PBXGroup;
 			children = (
 				83E34F562C21CB2B008AA950 /* BugsnagBinding.h */,
 				83E34F5D2C21CC53008AA950 /* DotnetBugsnagBinding.swift */,
+				695AD30A2CC6789D00236F89 /* BugsnagInternalsWrapper.m */,
 			);
-			path = BugsnagBinding;
+			path = Bugsnag;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,11 +99,11 @@
 				TargetAttributes = {
 					83E34F522C21CB2B008AA950 = {
 						CreatedOnToolsVersion = 15.3;
-						LastSwiftMigration = 1530;
+						LastSwiftMigration = 1540;
 					};
 				};
 			};
-			buildConfigurationList = 83E34F4D2C21CB2B008AA950 /* Build configuration list for PBXProject "BugsnagBinding" */;
+			buildConfigurationList = 83E34F4D2C21CB2B008AA950 /* Build configuration list for PBXProject "Bugsnag" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -149,6 +136,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				695AD30B2CC6789D00236F89 /* BugsnagInternalsWrapper.m in Sources */,
 				83E34F5E2C21CC53008AA950 /* DotnetBugsnagBinding.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -371,7 +359,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		83E34F4D2C21CB2B008AA950 /* Build configuration list for PBXProject "BugsnagBinding" */ = {
+		83E34F4D2C21CB2B008AA950 /* Build configuration list for PBXProject "Bugsnag" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83E34F582C21CB2B008AA950 /* Debug */,
