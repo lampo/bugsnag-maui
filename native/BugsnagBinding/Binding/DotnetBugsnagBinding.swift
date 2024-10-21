@@ -1,6 +1,4 @@
 import Foundation
-import Bugsnag
-import BugsnagNetworkRequestPlugin
 import UIKit
 
 @objc public class DotnetBugsnagBinding : NSObject {
@@ -9,8 +7,7 @@ import UIKit
         let config = BugsnagConfiguration.loadConfig()
         config.launchDurationMillis = 0
         config.releaseStage = releaseStage
-        config.add(BugsnagNetworkRequestPlugin())
-        Bugsnag.start(with: config)
+        Bugsnag.start(withConfiguration: config)
     }
     
     @objc public static func markLaunchCompleted() {

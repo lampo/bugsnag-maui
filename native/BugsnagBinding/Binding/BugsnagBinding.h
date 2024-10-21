@@ -7,6 +7,10 @@
 
 #import <Foundation/Foundation.h>
 #import "BugsnagInternals.h"
+#import "Bugsnag.h"
+#import "BugsnagBreadcrumb.h"
+#import "BugsnagConfiguration.h"
+#import "BugsnagEvent.h"
 
 //! Project version number for NewBinding.
 FOUNDATION_EXPORT double NewBindingVersionNumber;
