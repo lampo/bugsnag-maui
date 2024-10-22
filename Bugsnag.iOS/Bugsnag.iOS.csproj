@@ -41,6 +41,8 @@
             <SchemeName>BugsnagBinding</SchemeName>
             <SharpieNamespace>Bugsnag.iOS</SharpieNamespace>
             <SharpieBind>false</SharpieBind>
+            <SmartLink>True</SmartLink>
+            <ForceLoad>False</ForceLoad>
         </NLIXcodeProjectReference>
         
 <!--        <NativeReference-->

@@ -4,8 +4,8 @@ using ObjCRuntime;
 
 namespace Bugsnag.iOS
 {
-    [BaseType(typeof(NSObject))]
-interface BugsnagBinding
+	[BaseType(typeof(NSObject))]
+    interface BugsnagBindingClient
 {
     [Static]
     [Export("startBugsnagWithConfiguration:")]
