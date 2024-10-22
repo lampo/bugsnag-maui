@@ -1,0 +1,4 @@
+module BugsnagInternals {
+    header "BugsnagInternals.h"
+    export *
+}

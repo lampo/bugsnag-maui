@@ -22,10 +22,10 @@
 
     <Target Name="Check XCFramework" BeforeTargets="_BuildXcodeProjectsForiOS">
         <Message Text="Check Native Libraries" Importance="high" />
-        <Exec
-                Command="[[ ! -d '../native/BugsnagBinding/Bugsnag.xcframework' ]] &amp;&amp; '../scripts/download-xcframeworks.sh' || '../scripts/check-xcframeworks.sh'"
-                Condition=" '$(OS)' != 'Windows_NT' "
-        />
+<!--        <Exec-->
+<!--                Command="[[ ! -d '../native/BugsnagBinding/Bugsnag.xcframework' ]] &amp;&amp; '../scripts/download-xcframeworks.sh' || '../scripts/check-xcframeworks.sh'"-->
+<!--                Condition=" '$(OS)' != 'Windows_NT' "-->
+<!--        />-->
         <Error Condition=" '$(OS)' == 'Windows_NT' " Text="Building on Windows is not supported." />
     </Target>
 
@@ -36,23 +36,24 @@
 
     <!-- Reference to Xcode project -->
     <ItemGroup>
-        <NLIXcodeProjectReference Include="../native/BugsnagBinding/BugsnagBinding.xcodeproj">
+        <NLIXcodeProjectReference Include="../bugsnag-cocoa-build/bugsnag-ios.xcodeproj">            
+<!--        <NLIXcodeProjectReference Include="../bugsnag-cocoa-build/BugsnagBinding.xcodeproj">-->
             <SchemeName>BugsnagBinding</SchemeName>
             <SharpieNamespace>Bugsnag.iOS</SharpieNamespace>
-            <SharpieBind>true</SharpieBind>
+            <SharpieBind>false</SharpieBind>
         </NLIXcodeProjectReference>
         
-        <NativeReference
-            Include="../native/BugsnagBinding/Bugsnag.xcframework" >
-            <Kind>Framework</Kind>
-            <Smartlink>false</Smartlink>
-        </NativeReference>
+<!--        <NativeReference-->
+<!--            Include="../native/BugsnagBinding/Bugsnag.xcframework" >-->
+<!--            <Kind>Framework</Kind>-->
+<!--            <Smartlink>false</Smartlink>-->
+<!--        </NativeReference>-->
 
-        <NativeReference
-            Include="../native/BugsnagBinding/BugsnagNetworkRequestPlugin.xcframework" >
-            <Kind>Framework</Kind>
-            <Smartlink>false</Smartlink>
-        </NativeReference>
+<!--        <NativeReference-->
+<!--            Include="../native/BugsnagBinding/BugsnagNetworkRequestPlugin.xcframework" >-->
+<!--            <Kind>Framework</Kind>-->
+<!--            <Smartlink>false</Smartlink>-->
+<!--        </NativeReference>-->
     </ItemGroup>
 
     <!-- Reference to NuGet for building bindings -->

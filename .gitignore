@@ -414,3 +414,5 @@ tmp/
 xcuserdata/
 
 local.*
+
+build/
