@@ -3,7 +3,7 @@
 # Get the script location
 scriptDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Get the version from the .maven-sdk-version file
+# Get the version from the .sdk-version file
 version=$(cat "$scriptDir/../.maven-sdk-version")
 
 # Define the Maven group, artifact, and type
@@ -11,7 +11,7 @@ group="com.bugsnag"
 outputDirectory="$scriptDir/../Bugsnag.Android/Native"
 
 # Replace . in group with / for the URL
-groupUrl="${group//./\/}"
+groupUrl="${group//.//}"
 
 # Create the output directory if it doesn't exist
 if [ -d "$outputDirectory" ]; then
@@ -20,7 +20,7 @@ else
     mkdir -p "$outputDirectory"
 fi
 
-function Get-AAR {
+function GetAAR {
     local groupUrl=$1
     local artifact=$2
     local version=$3
@@ -28,12 +28,12 @@ function Get-AAR {
     local outputDir=$5
 
     # Define the URL to download the AAR from
-    url="https://repo1.maven.org/maven2/$groupUrl/$artifact/$version/$artifact-$version.$type"
+    local url="https://repo1.maven.org/maven2/$groupUrl/$artifact/$version/$artifact-$version.$type"
 
     # Define the output file
-    outputFile="$outputDir/$artifact-$version.$type"
+    local outputFile="$outputDir/$artifact-$version.$type"
     
-    echo "Downloading $artifact-$version.$type from $url"
+    echo "Downloading $artifact-$version.$type from $url"  
 
     # Download the AAR file
     curl -o "$outputFile" "$url"
@@ -42,8 +42,8 @@ function Get-AAR {
 }
 
 # Call the function
-Get-AAR "$groupUrl" "bugsnag-android-core" "$version" "aar" "$outputDirectory"
-Get-AAR "$groupUrl" "bugsnag-plugin-android-anr" "$version" "aar" "$outputDirectory"
-Get-AAR "$groupUrl" "bugsnag-plugin-android-ndk" "$version" "aar" "$outputDirectory"
+GetAAR "$groupUrl" "bugsnag-android-core" "$version" "aar" "$outputDirectory"
+GetAAR "$groupUrl" "bugsnag-plugin-android-anr" "$version" "aar" "$outputDirectory"
+GetAAR "$groupUrl" "bugsnag-plugin-android-ndk" "$version" "aar" "$outputDirectory"
 
 echo "$version" > "$scriptDir/../Bugsnag.Android/.maven-sdk-version"

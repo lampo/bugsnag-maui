@@ -2,7 +2,7 @@ namespace Bugsnag.Maui;
 
 public interface IBugsnag
 {
-    void Start(ReleaseStage releaseStage);
+    void Start();
 
     void MarkLaunchCompleted();
 

@@ -1,145 +1,324 @@
 #import <Foundation/Foundation.h>
-#import "Bugsnag.h"
-#import "BugsnagUser.h"
-#import "BugsnagEvent.h"
-#import "BugsnagApp.h"
-#import "BugsnagAppWithState.h"
-#import "BugsnagDevice.h"
-#import "BugsnagDeviceWithState.h"
-#import "BugsnagConfiguration.h"
+#import <Bugsnag/Bugsnag.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+@interface BugsnagBindingClient : NSObject
 
-struct bugsnag_user {
-    const char *user_id;
-    const char *user_name;
-    const char *user_email;
-};
+/**
+ * All Bugsnag access is class-level.  Prevent the creation of instances.
+ */
+- (instancetype _Nonnull )init NS_UNAVAILABLE NS_SWIFT_UNAVAILABLE("Use class methods to initialise Bugsnag.");
 
-void bugsnag_startBugsnagWithConfiguration(BugsnagConfiguration *configuration, char *notifierVersion);
+/**
+ * Start listening for crashes.
+ *
+ * This method initializes Bugsnag with the configuration set in your Info.plist.
+ *
+ * If a Bugsnag apiKey string has not been added to your Info.plist or is empty, an
+ * NSException will be thrown to indicate that the configuration is not valid.
+ *
+ * Once successfully initialized, NSExceptions, C-- exceptions, Mach exceptions and
+ * signals will be logged to disk before your app crashes. The next time your app
+ * launches, these reports will be sent to your Bugsnag dashboard.
+ */
+- (BugsnagClient *_Nonnull)start;
 
-void bugsnag_clearMetadata(const char *section);
-void bugsnag_clearMetadataWithKey(const char *section, const char *key);
+/**
+ * Start listening for crashes.
+ *
+ * This method initializes Bugsnag with the default configuration and the provided
+ * apiKey.
+ *
+ * If apiKey is nil or is empty, an NSException will be thrown to indicate that the
+ * configuration is not valid.
+ *
+ * Once successfully initialized, NSExceptions, C-- exceptions, Mach exceptions and
+ * signals will be logged to disk before your app crashes. The next time your app
+ * launches, these reports will be sent to your Bugsnag dashboard.
+ *
+ * @param apiKey  The API key from your Bugsnag dashboard.
+ */
+- (BugsnagClient *_Nonnull)startWithApiKey:(NSString *_Nonnull)apiKey;
 
-NSDictionary *getDictionaryFromMetadataJson(const char *jsonString);
+/**
+ * Start listening for crashes.
+ *
+ * This method initializes Bugsnag with the provided configuration object.
+ *
+ * If the configuration's apiKey is nil or is empty, an NSException will be thrown
+ * to indicate that the configuration is not valid.
+ *
+ * Once successfully initialized, NSExceptions, C-- exceptions, Mach exceptions and
+ * signals will be logged to disk before your app crashes. The next time your app
+ * launches, these reports will be sent to your Bugsnag dashboard.
+ *
+ * @param configuration  The configuration to use.
+ */
+- (BugsnagClient *_Nonnull)startWithConfiguration:(BugsnagConfiguration *_Nonnull)configuration;
 
-const char *bugsnag_getEventMetaData(const void *event, const char *tab);
-void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key);
-void bugsnag_clearEventMetadataSection(const void *event, const char *section);
-void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadataJson);
+/**
+ * @return YES if and only if a Bugsnag.start() has been called
+ * and Bugsnag has initialized such that any calls to the Bugsnag methods can succeed
+ */
+- (BOOL)isStarted;
 
-BugsnagUser *bugsnag_getUserFromSession(const void *session);
-void bugsnag_setUserFromSession(const void *session, char *userId, char *userEmail, char *userName);
-BugsnagUser *bugsnag_getUserFromEvent(const void *event);
-void bugsnag_setUserFromEvent(const void *event, char *userId, char *userEmail, char *userName);
+/**
+ * Information about the last run of the app, and whether it crashed.
+ */
+@property (class, readonly, nullable, nonatomic) BugsnagLastRunInfo *lastRunInfo;
 
-void bugsnag_getThreadsFromEvent(const void *event, const void *instance, void (*callback)(const void *instance, void *threads[], int threads_size));
+/**
+ * Tells Bugsnag that your app has finished launching.
+ *
+ * Errors reported after calling this method will have the `BugsnagAppWithState.isLaunching`
+ * property set to false.
+ */
+- (void)markLaunchCompleted;
 
-void bugsnag_setEventSeverity(const void *event, const char *severity);
-const char *bugsnag_getSeverityFromEvent(const void *event);
+// =============================================================================
+// MARK: - Notify
+// =============================================================================
 
-void bugsnag_getStackframesFromError(const void *error, const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size));
-void bugsnag_getStackframesFromThread(const void *thread, const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size));
+/**
+ * Send a custom or caught exception to Bugsnag.
+ *
+ * The exception will be sent to Bugsnag in the background allowing your
+ * app to continue running.
+ *
+ * @param exception  The exception.
+ */
+- (void)notify:(NSException *_Nonnull)exception;
 
-void bugsnag_getErrorsFromEvent(const void *event, const void *instance, void (*callback)(const void *instance, void *errors[], int errors_size));
-void bugsnag_getBreadcrumbsFromEvent(const void *event, const void *instance, void (*callback)(const void *instance, void *breadcrumbs[], int breadcrumbs_size));
+/**
+ *  Send a custom or caught exception to Bugsnag
+ *
+ *  @param exception The exception
+ *  @param block     A block for optionally configuring the error report
+ */
+- (void)notify:(NSException *_Nonnull)exception
+         block:(BugsnagOnErrorBlock _Nullable)block;
 
-const char *bugsnag_getFeatureFlagsFromEvent(BugsnagEvent *event);
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error
+ */
+- (void)notifyError:(NSError *_Nonnull)error;
 
-const char *bugsnag_getBreadcrumbMetadata(const void *breadcrumb);
-void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *jsonString);
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error
+ *  @param block A block for optionally configuring the error report
+ */
+- (void)notifyError:(NSError *_Nonnull)error
+              block:(BugsnagOnErrorBlock _Nullable)block;
 
-const char *bugsnag_getBreadcrumbType(const void *breadcrumb);
-void bugsnag_setBreadcrumbType(const void *breadcrumb, char *type);
+// =============================================================================
+// MARK: - Breadcrumbs
+// =============================================================================
 
-const char *bugsnag_getValueAsString(const void *object, char *key);
-void bugsnag_setNumberValue(const void *object, char *key, const char *value);
+/**
+ * Leave a "breadcrumb" log message, representing an action that occurred
+ * in your app, to aid with debugging.
+ *
+ * @param message  the log message to leave
+ */
+- (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message;
 
-double bugsnag_getTimestampFromDateInObject(const void *object, char *key);
-void bugsnag_setTimestampFromDateInObject(const void *object, char *key, double timeStamp);
+/**
+ *  Leave a "breadcrumb" log message each time a notification with a provided
+ *  name is received by the application
+ *
+ *  @param notificationName name of the notification to capture
+ */
+- (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName;
 
-void bugsnag_setRuntimeVersionsFromDevice(const void *device, const char *versions[], int count);
-const char *bugsnag_getRuntimeVersionsFromDevice(const void *device);
+/**
+ * Leave a "breadcrumb" log message, representing an action that occurred
+ * in your app, to aid with debugging, along with additional metadata and
+ * a type.
+ *
+ * @param message The log message to leave.
+ * @param metadata Diagnostic data relating to the breadcrumb.
+ *                 Values should be serializable to JSON with NSJSONSerialization.
+ * @param type A BSGBreadcrumbTypeValue denoting the type of breadcrumb.
+ */
+- (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message
+                          metadata:(NSDictionary *_Nullable)metadata
+                           andType:(BSGBreadcrumbType)type
+    NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
 
-void bugsnag_setBoolValue(const void *object, char *key, char *value);
-void bugsnag_setStringValue(const void *object, char *key, char *value);
+/**
+ * Leave a "breadcrumb" log message representing a completed network request.
+ */
+- (void)leaveNetworkRequestBreadcrumbForTask:(nonnull NSURLSessionTask *)task
+                                     metrics:(nonnull NSURLSessionTaskMetrics *)metrics
+    API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0))
+    NS_SWIFT_NAME(leaveNetworkRequestBreadcrumb(task:metrics:));
 
-const char *bugsnag_getErrorTypeFromError(const void *error);
-const char *bugsnag_getThreadTypeFromThread(const void *thread);
+/**
+ * Returns the current buffer of breadcrumbs that will be sent with captured events. This
+ * ordered list represents the most recent breadcrumbs to be captured up to the limit
+ * set in `BugsnagConfiguration.maxBreadcrumbs`
+ */
+- (NSArray<BugsnagBreadcrumb *> *_Nonnull)breadcrumbs;
 
-BugsnagApp *bugsnag_getAppFromSession(const void *session);
-BugsnagAppWithState *bugsnag_getAppFromEvent(const void *event);
+// =============================================================================
+// MARK: - Session
+// =============================================================================
 
-BugsnagDevice *bugsnag_getDeviceFromSession(const void *session);
-BugsnagDeviceWithState *bugsnag_getDeviceFromEvent(const void *event);
+/**
+ * Starts tracking a new session.
+ *
+ * By default, sessions are automatically started when the application enters the foreground.
+ * If you wish to manually call startSession at
+ * the appropriate time in your application instead, the default behaviour can be disabled via
+ * autoTrackSessions.
+ *
+ * Any errors which occur in an active session count towards your application's
+ * stability score. You can prevent errors from counting towards your stability
+ * score by calling pauseSession and resumeSession at the appropriate
+ * time in your application.
+ *
+ * @see pauseSession:
+ * @see resumeSession:
+ */
+- (void)startSession;
 
-void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session));
-void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(void *event));
+/**
+ * Stops tracking a session.
+ *
+ * When a session is stopped, errors will not count towards your application's
+ * stability score. This can be advantageous if you do not wish these calculations to
+ * include a certain type of error, for example, a crash in a background service.
+ * You should disable automatic session tracking via autoTrackSessions if you call this method.
+ *
+ * A stopped session can be resumed by calling resumeSession,
+ * which will make any subsequent errors count towards your application's
+ * stability score. Alternatively, an entirely new session can be created by calling startSession.
+ *
+ * @see startSession:
+ * @see resumeSession:
+ */
+- (void)pauseSession;
 
-void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
-void bugsnag_retrieveCurrentSession(const void *ptr, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled));
+/**
+ * Resumes a session which has previously been stopped, or starts a new session if none exists.
+ *
+ * If a session has already been resumed or started and has not been stopped, calling this
+ * method will have no effect. You should disable automatic session tracking via
+ * autoTrackSessions if you call this method.
+ *
+ * It's important to note that sessions are stored in memory for the lifetime of the
+ * application process and are not persisted on disk. Therefore calling this method on app
+ * startup would start a new session, rather than continuing any previous session.
+ *
+ * You should call this at the appropriate time in your application when you wish to
+ * resume a previously started session. Any subsequent errors which occur in your application
+ * will be reported to Bugsnag and will count towards your application's stability score.
+ *
+ * @see startSession:
+ * @see pauseSession:
+ *
+ * @return true if a previous session was resumed, false if a new session was started.
+ */
+- (BOOL)resumeSession;
 
-void bugsnag_markLaunchCompleted();
-void bugsnag_registerForSessionCallbacksAfterStart(bool (*callback)(void *session));
+// =============================================================================
+// MARK: - Other methods
+// =============================================================================
 
-void *bugsnag_createConfiguration(char *apiKey);
-void bugsnag_setReleaseStage(const void *configuration, char *releaseStage);
+/**
+ * Retrieves the context - a general summary of what was happening in the application
+ */
+- (void)setContext:(NSString *_Nullable)context;
 
-void bugsnag_addFeatureFlagOnConfig(const void *configuration, char *name, char *variant);
-void bugsnag_addFeatureFlag(char *name, char *variant);
-void bugsnag_clearFeatureFlag(char *name);
-void bugsnag_clearFeatureFlags();
+/**
+ * Retrieves the context - a general summary of what was happening in the application
+ */
+- (NSString *_Nullable)context;
 
-void bugsnag_addFeatureFlagOnEvent(const void *event, char *name, char *variant);
-void bugsnag_clearFeatureFlagOnEvent(const void *event, char *name);
-void bugsnag_clearFeatureFlagsOnEvent(const void *event);
+// =============================================================================
+// MARK: - User
+// =============================================================================
 
-void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount);
-void bugsnag_setAppVersion(const void *configuration, char *appVersion);
-void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
-void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis);
-void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion);
-void bugsnag_setAppType(const void *configuration, char *appType);
-void bugsnag_setContext(const void *configuration, char *context);
-void bugsnag_setContextConfig(const void *configuration, char *context);
-void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs);
-void bugsnag_setMaxStringValueLength(const void *configuration, int maxStringValueLength);
-void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents);
-void bugsnag_setMaxPersistedSessions(const void *configuration, int maxPersistedSessions);
-void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count);
-void bugsnag_setEnabledTelemetryTypes(const void *configuration, const char *types[], int count);
-void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy);
-void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
-void bugsnag_setDiscardClasses(const void *configuration, const char *classNames[], int count);
-void bugsnag_setUserInConfig(const void *configuration, char *userId, char *userEmail, char *userName);
-void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count);
-void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
-void bugsnag_setAutoTrackSessions(const void *configuration, bool autoTrackSessions);
-void bugsnag_setPersistUser(const void *configuration, bool persistUser);
-void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously);
-void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL);
+/**
+ * The current user
+ */
+- (BugsnagUser *_Nonnull)user;
 
-void bugsnag_setMetadata(const char *section, const char *jsonString);
-const char *bugsnag_retrieveMetaData();
-void bugsnag_removeMetadata(const void *configuration, const char *tab);
+/**
+ *  Set user metadata
+ *
+ *  @param userId ID of the user
+ *  @param name   Name of the user
+ *  @param email  Email address of the user
+ *
+ *  If user ID is nil, a Bugsnag-generated Device ID is used for the `user.id` property of events and sessions.
+ */
+- (void)setUser:(NSString *_Nullable)userId
+       withEmail:(NSString *_Nullable)email
+       andName:(NSString *_Nullable)name;
 
-void bugsnag_addBreadcrumb(char *message, char *type, char *metadataJson);
-void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *metadataJson));
+// =============================================================================
+// MARK: - Feature flags
+// =============================================================================
 
-char *bugsnag_retrieveAppData();
-void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes));
-char *bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
+- (void)addFeatureFlagWithName:(nonnull NSString *)name variant:(nullable NSString *)variant
+    NS_SWIFT_NAME(addFeatureFlag(name:variant:));
 
-void bugsnag_populateUser(struct bugsnag_user *user);
-void bugsnag_setUser(char *userId, char *userEmail, char *userName);
-void bugsnag_startSession();
-void bugsnag_pauseSession();
-bool bugsnag_resumeSession();
+- (void)addFeatureFlagWithName:(nonnull NSString *)name
+    NS_SWIFT_NAME(addFeatureFlag(name:));
 
-#ifdef __cplusplus
-}
-#endif
+- (void)addFeatureFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags
+    NS_SWIFT_NAME(addFeatureFlags(_:));
 
-#endif /* BugsnagBindingClient_h */
+- (void)clearFeatureFlagWithName:(nonnull NSString *)name
+    NS_SWIFT_NAME(clearFeatureFlag(name:));
+
+- (void)clearFeatureFlags;
+
+// =============================================================================
+// MARK: - onSession
+// =============================================================================
+
+/**
+ *  Add a callback to be invoked before a session is sent to Bugsnag.
+ *
+ *  @param block A block which can modify the session
+ *
+ *  @returns An opaque reference to the callback which can be passed to `removeOnSession:`
+ */
+- (nonnull BugsnagOnSessionRef)addOnSessionBlock:(nonnull BugsnagOnSessionBlock)block
+    NS_SWIFT_NAME(addOnSession(block:));
+
+
+
+// =============================================================================
+// MARK: - onBreadcrumb
+// =============================================================================
+
+/**
+ *  Add a callback to be invoked when a breadcrumb is captured by Bugsnag, to
+ *  change the breadcrumb contents as needed
+ *
+ *  @param block A block which returns YES if the breadcrumb should be captured
+ *
+ *  @returns An opaque reference to the callback which can be passed to `removeOnBreadcrumb:`
+ */
+- (nonnull BugsnagOnBreadcrumbRef)addOnBreadcrumbBlock:(nonnull BugsnagOnBreadcrumbBlock)block
+    NS_SWIFT_NAME(addOnBreadcrumb(block:));
+
+/**
+ * Remove the callback that would be invoked when a breadcrumb is captured.
+ *
+ * @param callback The opaque reference of the callback, returned by `addOnBreadcrumbBlock:`
+ */
+- (void)removeOnBreadcrumb:(nonnull BugsnagOnBreadcrumbRef)callback
+    NS_SWIFT_NAME(removeOnBreadcrumb(_:));
+
+- (NSDictionary *)createEvent:(NSDictionary *)jsonError unhandled:(Boolean)unhandled deliver:(Boolean)deliver;
+
+- (void)deliverEvent:(NSDictionary *)json;
+
+@end

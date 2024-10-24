@@ -6,24 +6,28 @@ public static class MauiAppBuilderExtensions
 {
     public static MauiAppBuilder UseBugsnag(
         this MauiAppBuilder builder,
-        ReleaseStage releaseStage,
-        string apiKey
+        Action<BugsnagBuilder> configureDelegate
     )
     {
-        var instance = new BugsnagMaui(apiKey);
+        var configurationBuilder = new BugsnagBuilder();
+        
+        configureDelegate(configurationBuilder);
+        
+        var instance = configurationBuilder.Build();
+        
         builder.Services.AddSingleton<IBugsnag>(_ => instance);
         builder.ConfigureLifecycleEvents(events =>
         {
 #if ANDROID
             events.AddAndroid(android =>
-                android.OnCreate((activity, bundle) => instance.Start(releaseStage))
+                android.OnCreate((activity, bundle) => instance.Start())
             );
 #elif IOS
             events.AddiOS(ios =>
                 ios.FinishedLaunching(
                     (_, _) =>
                     {
-                        instance.Start(releaseStage);
+                        instance.Start();
                         return true;
                     }
                 )

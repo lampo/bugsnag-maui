@@ -2,7 +2,7 @@
 
 public partial class BugsnagMaui
 {
-    public void Start(ReleaseStage releaseStage) { }
+    public void Start() { }
 
     public void MarkLaunchCompleted() { }
 

@@ -4,350 +4,119 @@ using ObjCRuntime;
 
 namespace Bugsnag.iOS
 {
+    // Delegate for BugsnagOnErrorBlock
+    delegate void BugsnagOnErrorBlock(BugsnagEvent @event);
+
+    // Delegate for BugsnagOnSessionBlock
+    delegate bool BugsnagOnSessionBlock(BugsnagSession session);
+
+    // Delegate for BugsnagOnBreadcrumbBlock
+    delegate bool BugsnagOnBreadcrumbBlock(BugsnagBreadcrumb breadcrumb);
+    
 	[BaseType(typeof(NSObject))]
     interface BugsnagBindingClient
-{
-    [Static]
-    [Export("startBugsnagWithConfiguration:")]
-    void StartBugsnagWithConfiguration(BugsnagConfiguration configuration, string notifierVersion);
-
-    [Static]
-    [Export("clearMetadata:")]
-    void ClearMetadata(string section);
-
-    [Static]
-    [Export("clearMetadataWithKey:section:")]
-    void ClearMetadataWithKey(string section, string key);
-
-    [Static]
-    [Export("getDictionaryFromMetadataJson:")]
-    NSDictionary GetDictionaryFromMetadataJson(string jsonString);
-
-    [Static]
-    [Export("getEventMetaData:tab:")]
-    string GetEventMetaData(IntPtr eventPtr, string tab);
-
-    [Static]
-    [Export("clearEventMetadataWithKey:section:key:")]
-    void ClearEventMetadataWithKey(IntPtr eventPtr, string section, string key);
-
-    [Static]
-    [Export("clearEventMetadataSection:section:")]
-    void ClearEventMetadataSection(IntPtr eventPtr, string section);
-
-    [Static]
-    [Export("setEventMetadata:tab:metadataJson:")]
-    void SetEventMetadata(IntPtr eventPtr, string tab, string metadataJson);
-
-    [Static]
-    [Export("getUserFromSession:")]
-    BugsnagUser GetUserFromSession(IntPtr session);
-
-    [Static]
-    [Export("setUserFromSession:userId:userEmail:userName:")]
-    void SetUserFromSession(IntPtr session, string userId, string userEmail, string userName);
-
-    [Static]
-    [Export("getUserFromEvent:")]
-    BugsnagUser GetUserFromEvent(IntPtr eventPtr);
-
-    [Static]
-    [Export("setUserFromEvent:userId:userEmail:userName:")]
-    void SetUserFromEvent(IntPtr eventPtr, string userId, string userEmail, string userName);
-    
-    [Static]
-    [Export("setEventSeverity:event:severity:")]
-    void SetEventSeverity(IntPtr eventPtr, string severity);
-
-    [Static]
-    [Export("getSeverityFromEvent:")]
-    string GetSeverityFromEvent(IntPtr eventPtr);
-
-    [Static]
-    [Export("getFeatureFlagsFromEvent:")]
-    string GetFeatureFlagsFromEvent(BugsnagEvent eventPtr);
-
-    [Static]
-    [Export("getBreadcrumbMetadata:")]
-    string GetBreadcrumbMetadata(IntPtr breadcrumb);
-
-    [Static]
-    [Export("setBreadcrumbMetadata:metadataJson:")]
-    void SetBreadcrumbMetadata(IntPtr breadcrumb, string metadataJson);
-
-    [Static]
-    [Export("getBreadcrumbType:")]
-    string GetBreadcrumbType(IntPtr breadcrumb);
-
-    [Static]
-    [Export("setBreadcrumbType:type:")]
-    void SetBreadcrumbType(IntPtr breadcrumb, string type);
-
-    [Static]
-    [Export("getValueAsString:object:key:")]
-    string GetValueAsString(IntPtr obj, string key);
-
-    [Static]
-    [Export("setNumberValue:object:key:value:")]
-    void SetNumberValue(IntPtr obj, string key, string value);
-
-    [Static]
-    [Export("getTimestampFromDateInObject:object:key:")]
-    double GetTimestampFromDateInObject(IntPtr obj, string key);
-
-    [Static]
-    [Export("setTimestampFromDateInObject:object:key:timeStamp:")]
-    void SetTimestampFromDateInObject(IntPtr obj, string key, double timeStamp);
-
-    [Static]
-    [Export("setRuntimeVersionsFromDevice:device:versions:count:")]
-    void SetRuntimeVersionsFromDevice(IntPtr device, string[] versions, int count);
-
-    [Static]
-    [Export("getRuntimeVersionsFromDevice:")]
-    string GetRuntimeVersionsFromDevice(IntPtr device);
-
-    [Static]
-    [Export("setBoolValue:object:key:value:")]
-    void SetBoolValue(IntPtr obj, string key, string value);
+    {
+        [Export("start")]
+        BugsnagClient Start();
 
-    [Static]
-    [Export("setStringValue:object:key:value:")]
-    void SetStringValue(IntPtr obj, string key, string value);
+        [Export("startWithApiKey:")]
+        BugsnagClient Start(string apiKey);
 
-    [Static]
-    [Export("getErrorTypeFromError:error:")]
-    string GetErrorTypeFromError(IntPtr error);
+        [Export("startWithConfiguration:")]
+        BugsnagClient Start(BugsnagConfiguration configuration);
+        [Export("isStarted")]
+        bool IsStarted { get; }
 
-    [Static]
-    [Export("getThreadTypeFromThread:thread:")]
-    string GetThreadTypeFromThread(IntPtr thread);
+        [Static]
+        [Export("lastRunInfo")]
+        BugsnagLastRunInfo LastRunInfo { get; }
 
-    [Static]
-    [Export("getAppFromSession:session:")]
-    BugsnagApp GetAppFromSession(IntPtr session);
+        [Export("markLaunchCompleted")]
+        void MarkLaunchCompleted();
 
-    [Static]
-    [Export("getAppFromEvent:event:")]
-    BugsnagAppWithState GetAppFromEvent(IntPtr eventPtr);
+        [Export("notify:")]
+        void Notify(NSException exception);
 
-    [Static]
-    [Export("getDeviceFromSession:session:")]
-    BugsnagDevice GetDeviceFromSession(IntPtr session);
+        [Export("notify:block:")]
+        void Notify(NSException exception, [NullAllowed] Action<BugsnagEvent> block);
 
-    [Static]
-    [Export("getDeviceFromEvent:event:")]
-    BugsnagDeviceWithState GetDeviceFromEvent(IntPtr eventPtr);
+        [Export("notifyError:")]
+        void NotifyError(NSError error);
 
-    [Static]
-    [Export("registerForSessionCallbacks:configuration:callback:")]
-    void RegisterForSessionCallbacks(IntPtr configuration, Func<IntPtr, bool> callback);
+        [Export("notifyError:block:")]
+        void NotifyError(NSError error, [NullAllowed] Action<BugsnagEvent> block);
 
-    [Static]
-    [Export("registerForOnSendCallbacks:configuration:callback:")]
-    void RegisterForOnSendCallbacks(IntPtr configuration, Func<IntPtr, bool> callback);
+        [Export("leaveBreadcrumbWithMessage:")]
+        void LeaveBreadcrumb(string message);
 
-    [Static]
-    [Export("registerSession:sessionId:startedAt:unhandledCount:handledCount:")]
-    void RegisterSession(string sessionId, long startedAt, int unhandledCount, int handledCount);
+        [Export("leaveBreadcrumbForNotificationName:")]
+        void LeaveBreadcrumbForNotificationName(string notificationName);
 
-    [Static]
-    [Export("retrieveCurrentSession:ptr:callback:")]
-    void RetrieveCurrentSession(IntPtr ptr, Action<IntPtr, string, string, int, int> callback);
+        [Export("leaveBreadcrumbWithMessage:metadata:andType:")]
+        void LeaveBreadcrumb(string message, [NullAllowed] NSDictionary metadata, BSGBreadcrumbType type);
 
-    [Static]
-    [Export("markLaunchCompleted")]
-    void MarkLaunchCompleted();
+        [Export("leaveNetworkRequestBreadcrumbForTask:metrics:")]
+        void LeaveNetworkRequestBreadcrumb(NSUrlSessionTask task, NSUrlSessionTaskMetrics metrics);
 
-    [Static]
-    [Export("registerForSessionCallbacksAfterStart:callback:")]
-    void RegisterForSessionCallbacksAfterStart(Func<IntPtr, bool> callback);
+        [Export("breadcrumbs")]
+        BugsnagBreadcrumb[] Breadcrumbs { get; }
 
-    [Static]
-    [Export("createConfiguration:apiKey:")]
-    IntPtr CreateConfiguration(string apiKey);
+        [Export("startSession")]
+        void StartSession();
 
-    [Static]
-    [Export("setReleaseStage:configuration:releaseStage:")]
-    void SetReleaseStage(IntPtr configuration, string releaseStage);
+        [Export("pauseSession")]
+        void PauseSession();
 
-    [Static]
-    [Export("addFeatureFlagOnConfig:configuration:name:variant:")]
-    void AddFeatureFlagOnConfig(IntPtr configuration, string name, string variant);
+        [Export("resumeSession")]
+        bool ResumeSession();
 
-    [Static]
-    [Export("addFeatureFlag:name:variant:")]
-    void AddFeatureFlag(string name, string variant);
+        [Export("setContext:")]
+        void SetContext([NullAllowed] string context);
 
-    [Static]
-    [Export("clearFeatureFlag:name:")]
-    void ClearFeatureFlag(string name);
+        [Export("context")]
+        [NullAllowed]
+        string Context { get; }
 
-    [Static]
-    [Export("clearFeatureFlags")]
-    void ClearFeatureFlags();
+        [Export("user")]
+        BugsnagUser User { get; }
 
-    [Static]
-    [Export("addFeatureFlagOnEvent:event:name:variant:")]
-    void AddFeatureFlagOnEvent(IntPtr eventPtr, string name, string variant);
+        [Export("setUser:withEmail:andName:")]
+        void SetUser([NullAllowed] string userId, [NullAllowed] string email, [NullAllowed] string name);
 
-    [Static]
-    [Export("clearFeatureFlagOnEvent:event:name:")]
-    void ClearFeatureFlagOnEvent(IntPtr eventPtr, string name);
+        [Export("addFeatureFlagWithName:variant:")]
+        void AddFeatureFlag(string name, [NullAllowed] string variant);
 
-    [Static]
-    [Export("clearFeatureFlagsOnEvent:event:")]
-    void ClearFeatureFlagsOnEvent(IntPtr eventPtr);
+        [Export("addFeatureFlagWithName:")]
+        void AddFeatureFlag(string name);
 
-    [Static]
-    [Export("setNotifyReleaseStages:configuration:releaseStages:releaseStagesCount:")]
-    void SetNotifyReleaseStages(IntPtr configuration, string[] releaseStages, int releaseStagesCount);
+        [Export("addFeatureFlags:")]
+        void AddFeatureFlags(BugsnagFeatureFlag[] featureFlags);
 
-    [Static]
-    [Export("setAppVersion:configuration:appVersion:")]
-    void SetAppVersion(IntPtr configuration, string appVersion);
+        [Export("clearFeatureFlagWithName:")]
+        void ClearFeatureFlag(string name);
 
-    [Static]
-    [Export("setAppHangThresholdMillis:configuration:appHangThresholdMillis:")]
-    void SetAppHangThresholdMillis(IntPtr configuration, nuint appHangThresholdMillis);
+        [Export("clearFeatureFlags")]
+        void ClearFeatureFlags();
 
-    [Static]
-    [Export("setLaunchDurationMillis:configuration:launchDurationMillis:")]
-    void SetLaunchDurationMillis(IntPtr configuration, nuint launchDurationMillis);
+        [Export("addOnSessionBlock:")]
+        NSObject AddOnSessionBlock(Func<BugsnagSession, bool> block);
 
-    [Static]
-    [Export("setBundleVersion:configuration:bundleVersion:")]
-    void SetBundleVersion(IntPtr configuration, string bundleVersion);
+        [Export("removeOnSession:")]
+        void RemoveOnSession(NSObject callback);
 
-    [Static]
-    [Export("setAppType:configuration:appType:")]
-    void SetAppType(IntPtr configuration, string appType);
+        [Export("addOnBreadcrumbBlock:")]
+        NSObject AddOnBreadcrumbBlock(Func<BugsnagBreadcrumb, bool> block);
 
-    [Static]
-    [Export("setContext:configuration:context:")]
-    void SetContext(IntPtr configuration, string context);
+        [Export("removeOnBreadcrumb:")]
+        void RemoveOnBreadcrumb(NSObject callback);
 
-    [Static]
-    [Export("setContextConfig:configuration:context:")]
-    void SetContextConfig(IntPtr configuration, string context);
+		[Export("createEvent:unhandled:deliver:")]
+		NSDictionary CreateEvent(NSDictionary jsonError, bool unhandled, bool deliver);
 
-    [Static]
-    [Export("setMaxBreadcrumbs:configuration:maxBreadcrumbs:")]
-    void SetMaxBreadcrumbs(IntPtr configuration, int maxBreadcrumbs);
+        [Export("deliverEvent:")]
+        void DeliverEvent(NSDictionary json);
+    }
 
-    [Static]
-    [Export("setMaxStringValueLength:configuration:maxStringValueLength:")]
-    void SetMaxStringValueLength(IntPtr configuration, int maxStringValueLength);
-
-    [Static]
-    [Export("setMaxPersistedEvents:configuration:maxPersistedEvents:")]
-    void SetMaxPersistedEvents(IntPtr configuration, int maxPersistedEvents);
-
-    [Static]
-    [Export("setMaxPersistedSessions:configuration:maxPersistedSessions:")]
-    void SetMaxPersistedSessions(IntPtr configuration, int maxPersistedSessions);
-
-    [Static]
-    [Export("setEnabledBreadcrumbTypes:configuration:types:count:")]
-    void SetEnabledBreadcrumbTypes(IntPtr configuration, string[] types, int count);
-
-    [Static]
-    [Export("setEnabledTelemetryTypes:configuration:types:count:")]
-    void SetEnabledTelemetryTypes(IntPtr configuration, string[] types, int count);
-
-    [Static]
-    [Export("setThreadSendPolicy:configuration:threadSendPolicy:")]
-    void SetThreadSendPolicy(IntPtr configuration, string threadSendPolicy);
-
-    [Static]
-    [Export("setEnabledErrorTypes:configuration:types:count:")]
-    void SetEnabledErrorTypes(IntPtr configuration, string[] types, int count);
-
-    [Static]
-    [Export("setDiscardClasses:configuration:classNames:count:")]
-    void SetDiscardClasses(IntPtr configuration, string[] classNames, int count);
-
-    [Static]
-    [Export("setUserInConfig:configuration:userId:userEmail:userName:")]
-    void SetUserInConfig(IntPtr configuration, string userId, string userEmail, string userName);
-
-    [Static]
-    [Export("setRedactedKeys:configuration:redactedKeys:count:")]
-    void SetRedactedKeys(IntPtr configuration, string[] redactedKeys, int count);
-
-    [Static]
-    [Export("setAutoNotifyConfig:configuration:autoNotify:")]
-    void SetAutoNotifyConfig(IntPtr configuration, bool autoNotify);
-
-    [Static]
-    [Export("setAutoTrackSessions:configuration:autoTrackSessions:")]
-    void SetAutoTrackSessions(IntPtr configuration, bool autoTrackSessions);
-
-    [Static]
-    [Export("setPersistUser:configuration:persistUser:")]
-    void SetPersistUser(IntPtr configuration, bool persistUser);
-
-    [Static]
-    [Export("setSendLaunchCrashesSynchronously:configuration:sendLaunchCrashesSynchronously:")]
-    void SetSendLaunchCrashesSynchronously(IntPtr configuration, bool sendLaunchCrashesSynchronously);
-
-    [Static]
-    [Export("setEndpoints:configuration:notifyURL:sessionsURL:")]
-    void SetEndpoints(IntPtr configuration, string notifyURL, string sessionsURL);
-
-    [Static]
-    [Export("setMetadata:section:jsonString:")]
-    void SetMetadata(string section, string jsonString);
-
-    [Static]
-    [Export("retrieveMetaData")]
-    string RetrieveMetaData();
-
-    [Static]
-    [Export("removeMetadata:configuration:tab:")]
-    void RemoveMetadata(IntPtr configuration, string tab);
-
-    [Static]
-    [Export("addBreadcrumb:message:type:metadataJson:")]
-    void AddBreadcrumb(string message, string type, string metadataJson);
-
-    [Static]
-    [Export("retrieveBreadcrumbs:managedBreadcrumbs:breadcrumb:")]
-    void RetrieveBreadcrumbs(IntPtr managedBreadcrumbs, Action<IntPtr, string, string, string, string> breadcrumb);
-
-    [Static]
-    [Export("retrieveAppData")]
-    string RetrieveAppData();
-
-    [Static]
-    [Export("retrieveLastRunInfo:lastRuninfo:callback:")]
-    void RetrieveLastRunInfo(IntPtr lastRuninfo, Action<IntPtr, bool, bool, int> callback);
-
-    [Static]
-    [Export("retrieveDeviceData:deviceData:callback:")]
-    void RetrieveDeviceData(IntPtr deviceData, Action<IntPtr, string, string> callback);
-
-    [Static]
-    [Export("populateUser:user:")]
-    void PopulateUser(ref BugsnagUser user);
-
-    [Static]
-    [Export("setUser:userId:userEmail:userName:")]
-    void SetUser(string userId, string userEmail, string userName);
-
-    [Static]
-    [Export("startSession")]
-    void StartSession();
-
-    [Static]
-    [Export("pauseSession")]
-    void PauseSession();
-
-    [Static]
-    [Export("resumeSession")]
-    bool ResumeSession();
-}
-    
     [BaseType(typeof(NSObject))]
     interface BugsnagEvent
     {
@@ -746,4 +515,87 @@ interface BugsnagSession
     [Export("setUser:withEmail:andName:")]
     void SetUser([NullAllowed] string userId, [NullAllowed] string email, [NullAllowed] string name);
 }
+
+
+
+    [BaseType(typeof(NSObject))]
+    interface BugsnagClient
+    {
+        [Export("notify:")]
+        void Notify(NSException exception);
+
+        [Export("notify:block:")]
+        void Notify(NSException exception, [NullAllowed] BugsnagOnErrorBlock block);
+
+        [Export("notifyError:")]
+        void NotifyError(NSError error);
+
+        [Export("notifyError:block:")]
+        void NotifyError(NSError error, [NullAllowed] BugsnagOnErrorBlock block);
+
+        [Export("leaveBreadcrumbWithMessage:")]
+        void LeaveBreadcrumb(string message);
+
+        [Export("leaveBreadcrumbForNotificationName:")]
+        void LeaveBreadcrumbForNotificationName(string notificationName);
+
+        [Export("leaveBreadcrumbWithMessage:metadata:andType:")]
+        void LeaveBreadcrumb(string message, [NullAllowed] NSDictionary metadata, BSGBreadcrumbType type);
+
+        [Export("leaveNetworkRequestBreadcrumbForTask:metrics:")]
+        void LeaveNetworkRequestBreadcrumb(NSUrlSessionTask task, NSUrlSessionTaskMetrics metrics);
+
+        [Export("breadcrumbs")]
+        BugsnagBreadcrumb[] Breadcrumbs { get; }
+
+        [Export("startSession")]
+        void StartSession();
+
+        [Export("pauseSession")]
+        void PauseSession();
+
+        [Export("resumeSession")]
+        bool ResumeSession();
+
+        [Export("addOnSessionBlock:")]
+        NSObject AddOnSessionBlock(Func<BugsnagSession, bool> block);
+
+        [Export("removeOnSession:")]
+        void RemoveOnSession(NSObject callback);
+
+        [Export("context")]
+        string Context { get; set; }
+
+        [Export("lastRunInfo")]
+        BugsnagLastRunInfo LastRunInfo { get; }
+
+        [Export("markLaunchCompleted")]
+        void MarkLaunchCompleted();
+
+        [Export("user")]
+        BugsnagUser User { get; }
+
+        [Export("setUser:withEmail:andName:")]
+        void SetUser([NullAllowed] string userId, [NullAllowed] string email, [NullAllowed] string name);
+
+        [Export("addOnBreadcrumbBlock:")]
+        NSObject AddOnBreadcrumbBlock(Func<BugsnagBreadcrumb, bool> block);
+
+        [Export("removeOnBreadcrumb:")]
+        void RemoveOnBreadcrumb(NSObject callback);
+}
+
+    [BaseType(typeof(NSObject))]
+    interface BugsnagLastRunInfo
+    {
+        [Export("consecutiveLaunchCrashes")]
+        nuint ConsecutiveLaunchCrashes { get; }
+
+        [Export("crashed")]
+        bool Crashed { get; }
+
+        [Export("crashedDuringLaunch")]
+        bool CrashedDuringLaunch { get; }
+    }
+    
 }
