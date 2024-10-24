@@ -19,4 +19,6 @@ public interface IBugsnag
     void LeaveBreadcrumb(string message);
 
     void LeaveBreadcrumb(string message, Dictionary<string, object> metadata);
+
+    static IBugsnag Current { get; }
 }

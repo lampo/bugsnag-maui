@@ -2,6 +2,8 @@
 
 public partial class BugsnagMaui : IBugsnag
 {
+    public static IBugsnag Current { get; private set; } = null!;
+
     public void Notify(Exception exception)
     {
         var report = new Payload.Exception(exception);
@@ -12,6 +14,7 @@ public partial class BugsnagMaui : IBugsnag
 
     private void ConfigureErrorHandling()
     {
+        Current = this;
         MauiExceptions.UnhandledException += (sender, args) =>
         {
             var report = new Payload.Exception((Exception)args.ExceptionObject);

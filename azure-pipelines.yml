@@ -38,7 +38,7 @@ stages:
 
       - template: .pipelines/publish-nuget.yml
         parameters:
-          package: 'Bugsnag.*.nupkg'
+          package: 'Bugsnag.Android.*.nupkg'
           dependsOn: approveAndroid
   
   - stage: BuildiOS
