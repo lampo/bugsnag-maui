@@ -14,7 +14,6 @@
         <PackageProjectUrl>https://github.com/lampo/bugsnag-maui</PackageProjectUrl>
         <RepositoryUrl>https://github.com/lampo/bugsnag-maui</RepositoryUrl>
 		<PackageTags>bugsang crash-reporting maui</PackageTags>
-		<Authors>Zach Dean</Authors>
 	</PropertyGroup>
 
 	<Target Name="CheckMavenArtifact" BeforeTargets="Build">

@@ -37,24 +37,24 @@
 
     <!-- point to local projects in debug -->
     <!--<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND $(Configuration) == 'Debug'">-->
-    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND $(Configuration) == 'Debug'">
         <ProjectReference Include="..\Bugsnag.Android\Bugsnag.Android.csproj" />
     </ItemGroup>
 
-    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' AND '$(OS)' != 'Windows_NT'">
+    <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' AND $(Configuration) == 'Debug' AND '$(OS)' != 'Windows_NT'">
         <ProjectReference Include="..\Bugsnag.iOS\Bugsnag.iOS.csproj">
             <HintPath>..\Bugsnag.iOS\bin\$(Configuration)\$(TargetFramework)\Bugsnag.iOS.dll</HintPath>
         </ProjectReference>
     </ItemGroup>
 
-    <!-- point to nugetss in release --><!--
+     <!--point to nugetss in release--> 
     <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND $(Configuration) != 'Debug'">
         <PackageReference Include="Bugsnag.Android" Version="$(ConnectSDKAndroidVersion)" />
     </ItemGroup>
 
     <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' AND $(Configuration) != 'Debug'">
         <PackageReference Include="Bugsnag.iOS" Version="$(ConnectSDKiOSVersion)" />
-    </ItemGroup>-->
+    </ItemGroup>
 
     <!-- Add multi platform -->
     <Import Project="./build/MultiPlatformTargets.props" />
