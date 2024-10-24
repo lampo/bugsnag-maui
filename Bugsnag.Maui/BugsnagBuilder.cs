@@ -10,7 +10,7 @@ public partial class BugsnagBuilder
     public BugsnagBuilder WithApiKey(string apiKey)
     {
         ArgumentException.ThrowIfNullOrEmpty(apiKey);
-        this.apiKey = this.apiKey;
+        this.apiKey = apiKey;
         return this;
     }
 
@@ -19,8 +19,7 @@ public partial class BugsnagBuilder
         this.releaseStage = releaseStage;
         return this;
     }
-    
-    
+
     public BugsnagBuilder WithAutoDetectErrors(bool autoDetectErrors)
     {
         this.autoDetectErrors = autoDetectErrors;

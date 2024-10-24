@@ -21,7 +21,12 @@
                 Clicked="OnErrorClicked"
                 HorizontalOptions="Fill"
                 Text="Click me to Report Error" />
-            
+
+            <Button
+                Clicked="OnDifferentErrorClicked"
+                HorizontalOptions="Fill"
+                Text="Click me to Report Error" />
+
             <Button
                 Clicked="OnNestedErrorClicked"
                 HorizontalOptions="Fill"

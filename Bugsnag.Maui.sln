@@ -30,6 +30,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{BF53
 		scripts\download-xcframeworks.sh = scripts\download-xcframeworks.sh
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".pipelines", ".pipelines", "{A618A2F9-A22B-4614-AD1A-756FEF5DED9A}"
+	ProjectSection(SolutionItems) = preProject
+		.pipelines\approval.yml = .pipelines\approval.yml
+		.pipelines\build-nuget.yml = .pipelines\build-nuget.yml
+		.pipelines\publish-nuget.yml = .pipelines\publish-nuget.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +67,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BF53B345-9EC2-476A-85CB-E396B65980A7} = {FBA88298-68D6-4198-8184-CDCD54850609}
+		{A618A2F9-A22B-4614-AD1A-756FEF5DED9A} = {FBA88298-68D6-4198-8184-CDCD54850609}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09976767-916D-4C8E-86C5-0BE70CEFE35B}

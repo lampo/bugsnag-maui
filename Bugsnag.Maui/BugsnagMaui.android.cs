@@ -9,7 +9,7 @@ using Object = Java.Lang.Object;
 
 namespace Bugsnag.Maui;
 
-public partial class BugsnagMaui : Object, IOnErrorCallback
+public partial class BugsnagMaui : Object, IOnSendCallback, IOnErrorCallback
 {
     private readonly AndroidConfiguration config;
     private readonly BugsnagWrapper client = new();
@@ -17,8 +17,25 @@ public partial class BugsnagMaui : Object, IOnErrorCallback
     public BugsnagMaui(AndroidConfiguration config)
     {
         this.config = config;
+        this.config.AddOnSend(this);
         this.config.AddOnError(this);
         this.ConfigureErrorHandling();
+    }
+
+    public bool OnError(Event bugsnagEvent)
+    {
+        bugsnagEvent.Context = null;
+
+        return true;
+    }
+
+    public bool OnSend(Event bugsnagEvent)
+    {
+        // Maui Errors are handled in the Maui layer, so we do not want to send the
+        // native crash reports to Bugsnag. android.runtime.JavaProxyThrowable is
+        // the best indicator that the error was handled in the Maui layer.
+        return !(bugsnagEvent.Errors?.Count > 0)
+            || bugsnagEvent.Errors[0].ErrorClass != "android.runtime.JavaProxyThrowable";
     }
 
     public void Start()
@@ -30,32 +47,6 @@ public partial class BugsnagMaui : Object, IOnErrorCallback
 
         var context = Platform.CurrentActivity!;
         client.Start(context, config);
-    }
-    
-    
-    public bool OnError(Event bugsnagEvent)
-    {
-        if (!bugsnagEvent.Unhandled 
-            || !(bugsnagEvent.Errors?.Count > 0) 
-            || !(bugsnagEvent.Errors[0].Stacktrace?.Count > 1))
-        {
-            return true;
-        }
-        
-        // Maui Errors are handled in the Maui layer, so we do not want to send the
-        // native crash reports to Bugsnag. only go back 5 frames since the
-        // xamaerin_unhandled_exception_handler is the best indicator that the error
-        // was handled in the Maui layer.
-        var stackTrace = bugsnagEvent.Errors[0].Stacktrace;
-        for (int frame = 0; frame < 5; frame++)
-        {
-            if (stackTrace[frame].Method?.Contains("xamarin_unhandled_exception_handler") == true)
-            {
-                return false;
-            }
-        }
-        
-        return true;
     }
 
     public void MarkLaunchCompleted()
@@ -104,7 +95,7 @@ public partial class BugsnagMaui : Object, IOnErrorCallback
         // Create a new JSONObject
         var jsonObject = new JSONObject(reportJson);
 
-        jsonObject.Put("type", "csharp");
+        jsonObject.Put("type", "android");
 
         var bugsnagEvent = client.CreateEvent(jsonObject, unhandled, false);
 

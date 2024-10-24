@@ -15,7 +15,6 @@ public partial class MainPage : ContentPage
 
     private void OnBreadcrumbClicked(object? sender, EventArgs e)
     {
-        //App.Bugsnag.Breadcrumbs.Leave("Breadcrumb clicked");
         this.bugsnag.LeaveBreadcrumb("Breadcrumb clicked");
     }
 
@@ -28,7 +27,18 @@ public partial class MainPage : ContentPage
         catch (Exception exception)
         {
             this.bugsnag.Notify(exception);
-            //App.Bugsnag.Notify(exception);
+        }
+    }
+
+    private void OnDifferentErrorClicked(object? sender, EventArgs e)
+    {
+        try
+        {
+            throw new NotImplementedException();
+        }
+        catch (Exception exception)
+        {
+            this.bugsnag.Notify(exception);
         }
     }
 

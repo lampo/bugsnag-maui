@@ -4,7 +4,7 @@ parameters:
     values:
       - Bugsnag.Android
       - Bugsnag.iOS
-      - Bugsnag
+      - Bugsnag.Maui
     
 jobs:
   - job:

@@ -17,7 +17,6 @@
         <PackageProjectUrl>https://github.com/lampo/bugsnag-maui</PackageProjectUrl>
         <RepositoryUrl>https://github.com/lampo/bugsnag-maui</RepositoryUrl>
         <PackageTags>bugsnag crash-reporting maui</PackageTags>
-        <Authors>Zach Dean</Authors>
     </PropertyGroup>
 
     <Target Name="Check XCFramework" BeforeTargets="_BuildXcodeProjectsForiOS">
@@ -36,26 +35,13 @@
 
     <!-- Reference to Xcode project -->
     <ItemGroup>
-        <NLIXcodeProjectReference Include="../bugsnag-cocoa-build/bugsnag-ios.xcodeproj">            
-<!--        <NLIXcodeProjectReference Include="../bugsnag-cocoa-build/BugsnagBinding.xcodeproj">-->
+        <NLIXcodeProjectReference Include="../bugsnag-cocoa-build/bugsnag-ios.xcodeproj">
             <SchemeName>BugsnagBinding</SchemeName>
             <SharpieNamespace>Bugsnag.iOS</SharpieNamespace>
             <SharpieBind>false</SharpieBind>
             <SmartLink>True</SmartLink>
             <ForceLoad>False</ForceLoad>
         </NLIXcodeProjectReference>
-        
-<!--        <NativeReference-->
-<!--            Include="../native/BugsnagBinding/Bugsnag.xcframework" >-->
-<!--            <Kind>Framework</Kind>-->
-<!--            <Smartlink>false</Smartlink>-->
-<!--        </NativeReference>-->
-
-<!--        <NativeReference-->
-<!--            Include="../native/BugsnagBinding/BugsnagNetworkRequestPlugin.xcframework" >-->
-<!--            <Kind>Framework</Kind>-->
-<!--            <Smartlink>false</Smartlink>-->
-<!--        </NativeReference>-->
     </ItemGroup>
 
     <!-- Reference to NuGet for building bindings -->

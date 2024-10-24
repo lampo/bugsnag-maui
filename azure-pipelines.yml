@@ -68,7 +68,7 @@ stages:
     jobs:
       - template: .pipelines/build-nuget.yml
         parameters:
-          artifact: 'Bugsnag'
+          artifact: 'Bugsnag.Maui'
 
   - stage: 'PublishCrossPlatform'
     displayName: 'Publish Cross Platform Library'
@@ -80,5 +80,5 @@ stages:
 
       - template: .pipelines/publish-nuget.yml
         parameters:
-          package: 'Bugsnag.Maui.nupkg;!*Android*;!*iOS*;'
+          package: 'Bugsnag.Maui.!(Android|iOS.)*.nupkg'
           dependsOn: approveCrossPlatform

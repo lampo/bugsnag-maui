@@ -10,18 +10,16 @@ public static class MauiAppBuilderExtensions
     )
     {
         var configurationBuilder = new BugsnagBuilder();
-        
+
         configureDelegate(configurationBuilder);
-        
+
         var instance = configurationBuilder.Build();
-        
+
         builder.Services.AddSingleton<IBugsnag>(_ => instance);
         builder.ConfigureLifecycleEvents(events =>
         {
 #if ANDROID
-            events.AddAndroid(android =>
-                android.OnCreate((activity, bundle) => instance.Start())
-            );
+            events.AddAndroid(android => android.OnCreate((activity, bundle) => instance.Start()));
 #elif IOS
             events.AddiOS(ios =>
                 ios.FinishedLaunching(
@@ -34,6 +32,7 @@ public static class MauiAppBuilderExtensions
             );
 #endif
         });
+
         return builder;
     }
 }
