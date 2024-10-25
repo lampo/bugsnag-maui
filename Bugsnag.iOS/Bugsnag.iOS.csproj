@@ -9,7 +9,7 @@
           <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <TargetPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">17.5</TargetPlatformVersion>
         
-        <Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.swift-sdk-version').Trim())</Version>
+        <Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.swift-sdk-version').Trim()).1</Version>
         <Authors>Zach Dean</Authors>
         <Company>Ramsey Solutions</Company>
         <Copyright>Copyright Ramsey Solutions. All rights reserved.</Copyright>
