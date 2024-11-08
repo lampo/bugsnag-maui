@@ -41,10 +41,9 @@ public partial class BugsnagMaui
         // xamaerin_unhandled_exception_handler is the best indicator that the error
         // was handled in the Maui layer.
         var stackTrace = bugsnagEvent.Errors[0].Stacktrace;
-        var stackTraceLength = stackTrace.Length;
         for (int frame = 0; frame < 5; frame++)
         {
-            if (frame >= stackTraceLength)
+            if (frame >= stackTrace.Length)
             {
                 return true;
             }
