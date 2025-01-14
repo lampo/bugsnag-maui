@@ -6,6 +6,7 @@ public partial class BugsnagBuilder
     private ReleaseStage releaseStage;
     private bool autoDetectErrors = true;
     private int? launchDurationMillis;
+    private bool attemptDeliveryOnCrash;
 
     public BugsnagBuilder WithApiKey(string apiKey)
     {
@@ -29,6 +30,12 @@ public partial class BugsnagBuilder
     public BugsnagBuilder WithLaunchDurationMillis(int launchDurationMillis)
     {
         this.launchDurationMillis = launchDurationMillis;
+        return this;
+    }
+
+    public BugsnagBuilder AttemptDeliveryOnCrash()
+    {
+        this.attemptDeliveryOnCrash = true;
         return this;
     }
 
