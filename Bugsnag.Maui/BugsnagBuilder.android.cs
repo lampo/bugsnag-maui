@@ -12,6 +12,7 @@ public partial class BugsnagBuilder
         config.AutoDetectErrors = this.autoDetectErrors;
         config.LaunchDurationMillis = this.launchDurationMillis ?? config.LaunchDurationMillis;
         config.ReleaseStage = this.releaseStage.ToString().ToLowerInvariant();
+        config.AttemptDeliveryOnCrash = this.attemptDeliveryOnCrash;
         return new BugsnagMaui(config);
     }
 }
