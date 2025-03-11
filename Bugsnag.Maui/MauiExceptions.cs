@@ -7,22 +7,21 @@ internal static class MauiExceptions
 
     static MauiExceptions()
     {
-        // This is the normal event expected, and should still be used.
-        // It will fire for exceptions from iOS and Mac Catalyst,
-        // and for exceptions on background threads from WinUI 3.
-
-        AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-        {
-            UnhandledException?.Invoke(sender, args);
-        };
-
 #if IOS || MACCATALYST
-
         // For iOS and Mac Catalyst
         // Exceptions will flow through AppDomain.CurrentDomain.UnhandledException,
         // but we need to set UnwindNativeCode to get it to work correctly.
         //
         // See: https://github.com/xamarin/xamarin-macios/issues/15252
+
+        // This is the normal event expected, and should still be used.
+        // It will fire for exceptions from iOS and Mac Catalyst,
+        // and for exceptions on background threads from WinUI 3.
+        AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+        {
+            UnhandledException?.Invoke(sender, args);
+            Console.WriteLine("Exception Handled from Domain");
+        };
 
         ObjCRuntime.Runtime.MarshalManagedException += (_, args) =>
         {
@@ -37,10 +36,10 @@ internal static class MauiExceptions
 
         global::Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser += (sender, args) =>
         {
-            UnhandledException?.Invoke(
-                sender!,
+            UnhandledException?.Invoke(sender!,
                 new UnhandledExceptionEventArgs(args.Exception, true)
             );
+            Console.WriteLine("Exception Handled from Android Environment");
         };
 
 #endif
