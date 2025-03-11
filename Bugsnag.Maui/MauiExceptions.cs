@@ -20,7 +20,6 @@ internal static class MauiExceptions
         AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
         {
             UnhandledException?.Invoke(sender, args);
-            Console.WriteLine("Exception Handled from Domain");
         };
 
         ObjCRuntime.Runtime.MarshalManagedException += (_, args) =>
@@ -39,7 +38,6 @@ internal static class MauiExceptions
             UnhandledException?.Invoke(sender!,
                 new UnhandledExceptionEventArgs(args.Exception, true)
             );
-            Console.WriteLine("Exception Handled from Android Environment");
         };
 
 #endif
