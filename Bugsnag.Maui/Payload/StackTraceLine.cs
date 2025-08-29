@@ -87,22 +87,22 @@ namespace Bugsnag.Maui.Payload
             this.AddToPayload("inProject", inProject);
         }
 
-        public string FileName
+        public string? FileName
         {
-            get { return this.Get("file") as string; }
-            set { this.AddToPayload("file", value); }
+            get => this.Get("file") as string;
+            set => this.AddToPayload("file", value);
         }
 
-        public string MethodName
+        public string? MethodName
         {
-            get { return this.Get("method") as string; }
-            set { this.AddToPayload("method", value); }
+            get => this.Get("method") as string;
+            set => this.AddToPayload("method", value);
         }
 
         public bool InProject
         {
-            get { return (bool)this.Get("inProject"); }
-            set { this.AddToPayload("inProject", value); }
+            get => (bool)this.Get("inProject");
+            set => this.AddToPayload("inProject", value);
         }
     }
 }

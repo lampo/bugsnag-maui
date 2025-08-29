@@ -6,13 +6,13 @@ public partial class BugsnagBuilder
 {
     internal partial BugsnagMaui Build()
     {
-        ArgumentException.ThrowIfNullOrEmpty(this.apiKey);
+        ArgumentException.ThrowIfNullOrEmpty(apiKey);
 
-        var config = new AndroidConfiguration(this.apiKey);
-        config.AutoDetectErrors = this.autoDetectErrors;
-        config.LaunchDurationMillis = this.launchDurationMillis ?? config.LaunchDurationMillis;
-        config.ReleaseStage = this.releaseStage.ToString().ToLowerInvariant();
-        config.AttemptDeliveryOnCrash = this.attemptDeliveryOnCrash;
-        return new BugsnagMaui(config);
+        var config = new AndroidConfiguration(apiKey);
+        config.AutoDetectErrors = autoDetectErrors;
+        config.LaunchDurationMillis = launchDurationMillis ?? config.LaunchDurationMillis;
+        config.ReleaseStage = releaseStage.ToString().ToLowerInvariant();
+        config.AttemptDeliveryOnCrash = attemptDeliveryOnCrash;
+        return new BugsnagMaui(config, onSendTransform);
     }
 }
