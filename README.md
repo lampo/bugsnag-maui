@@ -76,11 +76,14 @@ you also must have `ANDROID_HOME` configured
 
 Note: the rake file does not correctly handle creating the .xcodeproj, in fact, all of the files that are supposed to be automatically copied are committed to the repo. There is going to be a little bit of manual work to bump the ios sdk to a new version. The other option is to finish building the scripts.
 
-## Native Crash Reporting
+### Capturing Mono androdi native crash output for Bugsnag
 
-The native SDKs support native crash reporting. To enable this feature you must initialize the native SDKs in your platform specific projects.
+We use [AndroidRedirectStdToFile](.docs/AndroidRedirectStdToFile.md) to capture Mono's `Managed Stacktrace` from native crashes.
 
-### Android
+```csharp
+// In MainActivity or early startup
+AndroidRedirectStdToFile.Start("Bugsnag.Maui");
+```
 
-This sdk creates a pipe to listen for the managed stacktrace from the mono runtime. It is utilizing the file system to 
-save the crash report to disk and then appends it to the native crash report on send.
+On the next app launch after a crash, look in `<files>/crashes/` for the latest
+`crash_<epochMs>.txt` and attach it to the Bugsnag report.
