@@ -7,7 +7,7 @@
         <IsTrimmable>false</IsTrimmable>
         <RootNamespace>Bugsnag.iOS</RootNamespace>
           <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <TargetPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">18.4</TargetPlatformVersion>
+        <TargetPlatformVersion>18.0</TargetPlatformVersion>
         
         <Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.swift-sdk-version').Trim()).0</Version>
         <Authors>Zach Dean</Authors>
