@@ -15,7 +15,7 @@ namespace Bugsnag.Maui.Payload
         public static void AddToPayload<T>(
             this Dictionary<string, T> dictionary,
             string key,
-            T value
+            T? value
         )
         {
             if (value == null)

@@ -6,15 +6,15 @@ public partial class BugsnagBuilder
 {
     internal partial BugsnagMaui Build()
     {
-        ArgumentException.ThrowIfNullOrEmpty(this.apiKey);
+        ArgumentException.ThrowIfNullOrEmpty(apiKey);
 
-        var config = new BugsnagConfiguration(this.apiKey);
-        config.AutoDetectErrors = this.autoDetectErrors;
+        var config = new BugsnagConfiguration(apiKey);
+        config.AutoDetectErrors = autoDetectErrors;
         config.LaunchDurationMillis =
-            (uint?)this.launchDurationMillis ?? config.LaunchDurationMillis;
-        config.ReleaseStage = this.releaseStage.ToString().ToLowerInvariant();
-        config.AttemptDeliveryOnCrash = this.attemptDeliveryOnCrash;
+            (uint?)launchDurationMillis ?? config.LaunchDurationMillis;
+        config.ReleaseStage = releaseStage.ToString().ToLowerInvariant();
+        config.AttemptDeliveryOnCrash = attemptDeliveryOnCrash;
 
-        return new BugsnagMaui(config);
+        return new BugsnagMaui(config, onSendTransform);
     }
 }

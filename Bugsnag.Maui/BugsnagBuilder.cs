@@ -1,3 +1,5 @@
+using Bugsnag.Maui.Models;
+
 namespace Bugsnag.Maui;
 
 public partial class BugsnagBuilder
@@ -7,6 +9,7 @@ public partial class BugsnagBuilder
     private bool autoDetectErrors = true;
     private int? launchDurationMillis;
     private bool attemptDeliveryOnCrash;
+    private TransformBugsnagEventDelegate? onSendTransform;
 
     public BugsnagBuilder WithApiKey(string apiKey)
     {
@@ -36,6 +39,12 @@ public partial class BugsnagBuilder
     public BugsnagBuilder AttemptDeliveryOnCrash()
     {
         this.attemptDeliveryOnCrash = true;
+        return this;
+    }
+    
+    public BugsnagBuilder OnSendTransform(TransformBugsnagEventDelegate onSendTransform)
+    {
+        this.onSendTransform = onSendTransform;
         return this;
     }
 

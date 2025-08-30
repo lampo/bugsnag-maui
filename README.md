@@ -29,12 +29,40 @@ or add package reference to your project file
 
 the native bindings follow the sdk version that they are bound to
 
+| Package         | Version | SDK Version |
+|-----------------|---------|-------------|
+| Bugsnag.Maui    | [![Bugsnag.Maui package in RamseySolutions feed in Azure Artifacts](https://feeds.dev.azure.com/RamseySolutions/_apis/public/Packaging/Feeds/RamseySolutions/Packages/869fe73e-575e-418a-af32-e59bf4b8df69/Badge)](https://dev.azure.com/RamseySolutions/Ramsey%20Plus/_artifacts/feed/RamseySolutions/NuGet/Bugsnag.Maui?preferRelease=true)   | N/A         |
+| Bugsnag.Android | [![Bugsnag.Android package in RamseySolutions feed in Azure Artifacts](https://feeds.dev.azure.com/RamseySolutions/_apis/public/Packaging/Feeds/RamseySolutions/Packages/de2b3b39-8806-4352-a224-f641ba3101d4/Badge)](https://dev.azure.com/RamseySolutions/Ramsey%20Plus/_artifacts/feed/RamseySolutions/NuGet/Bugsnag.Android?preferRelease=true)  | 6.17.0      |
+| Bugsnag.iOS     | [![Bugsnag.iOS package in RamseySolutions feed in Azure Artifacts](https://feeds.dev.azure.com/RamseySolutions/_apis/public/Packaging/Feeds/RamseySolutions/Packages/25bb06e4-dc77-4c6b-b70e-5e14375cf3a3/Badge)](https://dev.azure.com/RamseySolutions/Ramsey%20Plus/_artifacts/feed/RamseySolutions/NuGet/Bugsnag.iOS?preferRelease=true)  | 6.32.2      |
+
+
+## Usage
+```csharp
+using Bugsnag.Maui;
+
+public static class MauiProgram
+{
+  public static MauiApp CreateMauiApp(Action<IServiceCollection>? addServices = null)
+  {
+    var builder = MauiApp.CreateBuilder();
+    builder.UseBugsnag(configure =>
+            configure
+              .WithApiKey(BugsnagApiKey)
+              .WithReleaseStage(ReleaseStage.Local)
+              .OnSendTransform(BugsnagErrorGrouping.Default)
+            );
+    
+    ...
+  }
+}
+```
+
 ## Building
 
 ### Android
 
 *prereques*
-your android envirnemnt must be configured. see dotnet maui [getting started](https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation?view=net-maui-8.0&tabs=visual-studio-code)
+your android environment must be configured. see dotnet maui [getting started](https://learn.microsoft.com/en-us/dotnet/maui/get-started/installation?view=net-maui-8.0&tabs=visual-studio-code)
 you also must have `ANDROID_HOME` configured
 
 * ensure that the [.maven-sdk-version](.maven-sdk-version) is at the correct version
@@ -46,4 +74,16 @@ you also must have `ANDROID_HOME` configured
 * open project
 * build
 
-note: the rake file does not correctly handle creating the .xcodeproj, in fact, all of the files that are supposed to be automatically copied are committed to the repo. There is going to be a little bit of manual work to bump the ios sdk to a new version. The other option is to finish building the scripts.
+Note: the rake file does not correctly handle creating the .xcodeproj, in fact, all of the files that are supposed to be automatically copied are committed to the repo. There is going to be a little bit of manual work to bump the ios sdk to a new version. The other option is to finish building the scripts.
+
+### Capturing Mono androdi native crash output for Bugsnag
+
+We use [AndroidRedirectStdToFile](.docs/AndroidRedirectStdToFile.md) to capture Mono's `Managed Stacktrace` from native crashes.
+
+```csharp
+// In MainActivity or early startup
+AndroidRedirectStdToFile.Start("Bugsnag.Maui");
+```
+
+On the next app launch after a crash, look in `<files>/crashes/` for the latest
+`crash_<epochMs>.txt` and attach it to the Bugsnag report.
