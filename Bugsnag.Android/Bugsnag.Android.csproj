@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CheckMavenArtifact" >
 	<PropertyGroup>
-		<TargetFramework>net9.0-android36</TargetFramework>
+		<TargetFramework>net9.0-android35</TargetFramework>
 		<SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>Bugsnag.Android</RootNamespace>
 		
-		<Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.maven-sdk-version').Trim()).0</Version>
+		<Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.maven-sdk-version').Trim()).1</Version>
 		<Authors>Zach Dean</Authors>
         <Company>Ramsey Solutions</Company>
         <Copyright>Copyright Ramsey Solutions. All rights reserved.</Copyright>
