@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.bugsnag.android.Bugsnag;
+import com.bugsnag.android.BugsnagExitInfoPlugin;
 import com.bugsnag.android.Configuration;
 import com.bugsnag.android.Event;
 import com.bugsnag.android.InternalHooks;
@@ -54,6 +55,12 @@ public class BugsnagMaui {
 
         if (configuration == null) {
             configuration = Configuration.load(context);
+        }
+
+        // automatically add the Exit Info plugin on Android 11+ if not already added
+        if (android.os.Build.VERSION.SDK_INT >= 30) {
+            BugsnagExitInfoPlugin bugsnagExitInfoPlugin = new BugsnagExitInfoPlugin();
+            configuration.addPlugin(bugsnagExitInfoPlugin);
         }
 
         client = new InternalHooks(Bugsnag.start(context, configuration));

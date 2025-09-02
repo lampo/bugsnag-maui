@@ -45,5 +45,6 @@ function GetAAR {
 GetAAR "$groupUrl" "bugsnag-android-core" "$version" "aar" "$outputDirectory"
 GetAAR "$groupUrl" "bugsnag-plugin-android-anr" "$version" "aar" "$outputDirectory"
 GetAAR "$groupUrl" "bugsnag-plugin-android-ndk" "$version" "aar" "$outputDirectory"
+GetAAR "$groupUrl" "bugsnag-plugin-android-exitinfo" "$version" "aar" "$outputDirectory"
 
 echo "$version" > "$scriptDir/../Bugsnag.Android/.maven-sdk-version"

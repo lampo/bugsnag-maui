@@ -35,6 +35,7 @@ configurations {
 
 dependencies {
     implementation("com.bugsnag:bugsnag-android:$sdkVersion")
+    implementation("com.bugsnag:bugsnag-plugin-android-exitinfo:$sdkVersion")
 }
 
 // Copy dependencies for binding library
