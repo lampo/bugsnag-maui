@@ -11,16 +11,13 @@ import com.bugsnag.android.Bugsnag;
 import com.bugsnag.android.BugsnagExitInfoPlugin;
 import com.bugsnag.android.Configuration;
 import com.bugsnag.android.Event;
-import com.bugsnag.android.InternalHooks;
+import com.bugsnag.android.MauiInternalHooks;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Map;
-import java.util.UUID;
-
 public class BugsnagMaui {
-    private InternalHooks client;
+    private MauiInternalHooks client;
 
     private static boolean isAttached = false;
 
@@ -45,11 +42,11 @@ public class BugsnagMaui {
 
         if (isAnyStarted) {
             Log.w("BugsnagMaui", "bugsnag.start() was called from a previous Maui context. Reusing existing client. Config not applied.");
-            client = new InternalHooks(InternalHooks.getClient());
+            client = new MauiInternalHooks(MauiInternalHooks.getClient());
             return;
         }
 
-        if (InternalHooks.getClient() != null) {
+        if (MauiInternalHooks.getClient() != null) {
             throw new IllegalStateException("bugsnag.start() may not be called after starting Bugsnag natively");
         }
 
@@ -63,7 +60,7 @@ public class BugsnagMaui {
             configuration.addPlugin(bugsnagExitInfoPlugin);
         }
 
-        client = new InternalHooks(Bugsnag.start(context, configuration));
+        client = new MauiInternalHooks(Bugsnag.start(context, configuration));
         isAnyStarted = true;
         isStarted = true;
     }

@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>Bugsnag.Android</RootNamespace>
 		
-		<Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.maven-sdk-version').Trim()).3</Version>
+		<Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.maven-sdk-version').Trim()).4</Version>
 		<Authors>Zach Dean</Authors>
         <Company>Ramsey Solutions</Company>
         <Copyright>Copyright Ramsey Solutions. All rights reserved.</Copyright>
@@ -45,9 +45,5 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui.NativeLibraryInterop.BuildTasks" Version="0.0.1-pre1" PrivateAssets="all" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Native\" />
 	</ItemGroup>
 </Project>
