@@ -48,5 +48,6 @@ function Get-AAR {
 Get-AAR -groupUrl $groupUrl -artifact "bugsnag-android-core" -version $version -type "aar" -outputDir $outputDirectory
 Get-AAR -groupUrl $groupUrl -artifact "bugsnag-plugin-android-anr" -version $version -type "aar" -outputDir $outputDirectory
 Get-AAR -groupUrl $groupUrl -artifact "bugsnag-plugin-android-ndk" -version $version -type "aar" -outputDir $outputDirectory
+Get-AAR -groupUrl $groupUrl -artifact "bugsnag-plugin-android-exitinfo" -version $version -type "aar" -outputDir $outputDirectory
 
 Set-Content -Path "$outputDirectory\.maven-sdk-version" -Value $version

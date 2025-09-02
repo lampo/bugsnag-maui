@@ -285,7 +285,15 @@ public partial class BugsnagMaui : Object, IOnSendCallback
 
     private bool ProcessTransform(Event bugsnagEvent)
     {
-        return transform == null || transform(BugsnagEvent.FromNativeEvent(bugsnagEvent));
+        try
+        {
+            return transform == null || transform(BugsnagEvent.FromNativeEvent(bugsnagEvent));
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            return true;
+        }
     }
 
     private long ExtractTimestamp(string filePath)

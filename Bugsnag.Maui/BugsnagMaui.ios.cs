@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
+using System.Text.Json;
 using Bugsnag.iOS;
 using Bugsnag.Maui.Models;
 using Foundation;
@@ -34,7 +35,15 @@ public partial class BugsnagMaui
 
     private bool OnSendError(NativeBugsnagEvent bugsnagEvent)
     {
-        return transform == null || transform(BugsnagEvent.FromNativeEvent(bugsnagEvent));
+        try
+        {
+            return transform == null || transform(BugsnagEvent.FromNativeEvent(bugsnagEvent));
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            return true;
+        }
     }
 
     public void MarkLaunchCompleted()
