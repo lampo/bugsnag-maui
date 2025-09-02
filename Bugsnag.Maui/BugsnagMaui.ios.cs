@@ -31,7 +31,7 @@ public partial class BugsnagMaui
         config.AddOnSendErrorBlock(OnSendError);
         bugsnagBindingClient.Start(config);
     }
-    
+
     private bool OnSendError(NativeBugsnagEvent bugsnagEvent)
     {
         return transform == null || transform(BugsnagEvent.FromNativeEvent(bugsnagEvent));
@@ -107,10 +107,7 @@ public partial class BugsnagMaui
         }
 
         // Handle error
-        Console.WriteLine(
-            $"Error converting JSON to NSDictionary: {error.LocalizedDescription}"
-        );
+        Console.WriteLine($"Error converting JSON to NSDictionary: {error.LocalizedDescription}");
         return null;
-
     }
 }

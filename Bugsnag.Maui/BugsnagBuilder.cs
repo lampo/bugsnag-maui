@@ -41,7 +41,7 @@ public partial class BugsnagBuilder
         this.attemptDeliveryOnCrash = true;
         return this;
     }
-    
+
     public BugsnagBuilder OnSendTransform(TransformBugsnagEventDelegate onSendTransform)
     {
         this.onSendTransform = onSendTransform;

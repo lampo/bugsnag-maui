@@ -12,8 +12,8 @@ namespace Bugsnag.iOS
 
     // Delegate for BugsnagOnBreadcrumbBlock
     delegate bool BugsnagOnBreadcrumbBlock(BugsnagBreadcrumb breadcrumb);
-    
-	[BaseType(typeof(NSObject))]
+
+    [BaseType(typeof(NSObject))]
     interface BugsnagBindingClient
     {
         [Export("start")]
@@ -24,6 +24,7 @@ namespace Bugsnag.iOS
 
         [Export("startWithConfiguration:")]
         BugsnagClient Start(BugsnagConfiguration configuration);
+
         [Export("isStarted")]
         bool IsStarted { get; }
 
@@ -53,7 +54,11 @@ namespace Bugsnag.iOS
         void LeaveBreadcrumbForNotificationName(string notificationName);
 
         [Export("leaveBreadcrumbWithMessage:metadata:andType:")]
-        void LeaveBreadcrumb(string message, [NullAllowed] NSDictionary metadata, BSGBreadcrumbType type);
+        void LeaveBreadcrumb(
+            string message,
+            [NullAllowed] NSDictionary metadata,
+            BSGBreadcrumbType type
+        );
 
         [Export("leaveNetworkRequestBreadcrumbForTask:metrics:")]
         void LeaveNetworkRequestBreadcrumb(NSUrlSessionTask task, NSUrlSessionTaskMetrics metrics);
@@ -81,7 +86,11 @@ namespace Bugsnag.iOS
         BugsnagUser User { get; }
 
         [Export("setUser:withEmail:andName:")]
-        void SetUser([NullAllowed] string userId, [NullAllowed] string email, [NullAllowed] string name);
+        void SetUser(
+            [NullAllowed] string userId,
+            [NullAllowed] string email,
+            [NullAllowed] string name
+        );
 
         [Export("addFeatureFlagWithName:variant:")]
         void AddFeatureFlag(string name, [NullAllowed] string variant);
@@ -110,8 +119,8 @@ namespace Bugsnag.iOS
         [Export("removeOnBreadcrumb:")]
         void RemoveOnBreadcrumb(NSObject callback);
 
-		[Export("createEvent:unhandled:deliver:")]
-		NSDictionary CreateEvent(NSDictionary jsonError, bool unhandled, bool deliver);
+        [Export("createEvent:unhandled:deliver:")]
+        NSDictionary CreateEvent(NSDictionary jsonError, bool unhandled, bool deliver);
 
         [Export("deliverEvent:")]
         void DeliverEvent(NSDictionary json);
@@ -160,363 +169,379 @@ namespace Bugsnag.iOS
         BugsnagUser User { get; }
 
         [Export("setUser:withEmail:andName:")]
-        void SetUser([NullAllowed] string userId, [NullAllowed] string email, [NullAllowed] string name);
+        void SetUser(
+            [NullAllowed] string userId,
+            [NullAllowed] string email,
+            [NullAllowed] string name
+        );
 
         [Export("setCorrelationTraceId:spanId:")]
         void SetCorrelationTraceId(string traceId, string spanId);
     }
-    
-    [BaseType(typeof(NSObject))]
-interface BugsnagBreadcrumb
-{
-    [Export("timestamp", ArgumentSemantic.Copy)]
-    NSDate Timestamp { get; }
-
-    [Export("type", ArgumentSemantic.Assign)]
-    BSGBreadcrumbType Type { get; set; }
-
-    [Export("message", ArgumentSemantic.Copy)]
-    string Message { get; set; }
-
-    [Export("metadata", ArgumentSemantic.Copy)]
-    NSDictionary Metadata { get; set; }
-}
-
-[Protocol, Model]
-[BaseType(typeof(NSObject))]
-interface BSGBreadcrumbSink
-{
-    [Abstract]
-    [Export("leaveBreadcrumbWithMessage:metadata:andType:")]
-    void LeaveBreadcrumb(string message, [NullAllowed] NSDictionary metadata, BSGBreadcrumbType type);
-}
-
 
     [BaseType(typeof(NSObject))]
-interface BugsnagFeatureFlag
-{
-    [Static]
-    [Export("flagWithName:")]
-    BugsnagFeatureFlag FlagWithName(string name);
+    interface BugsnagBreadcrumb
+    {
+        [Export("timestamp", ArgumentSemantic.Copy)]
+        NSDate Timestamp { get; }
 
-    [Static]
-    [Export("flagWithName:variant:")]
-    BugsnagFeatureFlag FlagWithName(string name, [NullAllowed] string variant);
+        [Export("type", ArgumentSemantic.Assign)]
+        BSGBreadcrumbType Type { get; set; }
 
-    [Export("name")]
-    string Name { get; }
+        [Export("message", ArgumentSemantic.Copy)]
+        string Message { get; set; }
 
-    [NullAllowed, Export("variant")]
-    string Variant { get; }
-}
+        [Export("metadata", ArgumentSemantic.Copy)]
+        NSDictionary Metadata { get; set; }
+    }
 
-[BaseType(typeof(NSObject))]
-interface BugsnagDevice
-{
-    [Export("jailbroken")]
-    bool Jailbroken { get; set; }
-
-    [NullAllowed, Export("id", ArgumentSemantic.Copy)]
-    string Id { get; set; }
-
-    [NullAllowed, Export("locale", ArgumentSemantic.Copy)]
-    string Locale { get; set; }
-
-    [NullAllowed, Export("manufacturer", ArgumentSemantic.Copy)]
-    string Manufacturer { get; set; }
-
-    [NullAllowed, Export("model", ArgumentSemantic.Copy)]
-    string Model { get; set; }
-
-    [NullAllowed, Export("modelNumber", ArgumentSemantic.Copy)]
-    string ModelNumber { get; set; }
-
-    [NullAllowed, Export("osName", ArgumentSemantic.Copy)]
-    string OsName { get; set; }
-
-    [NullAllowed, Export("osVersion", ArgumentSemantic.Copy)]
-    string OsVersion { get; set; }
-
-    [NullAllowed, Export("runtimeVersions", ArgumentSemantic.Copy)]
-    NSDictionary<NSString, NSString> RuntimeVersions { get; set; }
-
-    [NullAllowed, Export("totalMemory", ArgumentSemantic.Strong)]
-    NSNumber TotalMemory { get; set; }
-}
-
-[BaseType(typeof(BugsnagDevice))]
-interface BugsnagDeviceWithState
-{
-    [Export("freeDisk", ArgumentSemantic.Strong)]
-    NSNumber FreeDisk { get; set; }
-
-    [Export("freeMemory", ArgumentSemantic.Strong)]
-    NSNumber FreeMemory { get; set; }
-
-    [Export("orientation", ArgumentSemantic.Copy)]
-    string Orientation { get; set; }
-
-    [Export("time", ArgumentSemantic.Strong)]
-    NSDate Time { get; set; }
-}
+    [Protocol, Model]
     [BaseType(typeof(NSObject))]
-interface BugsnagUser
-{
-    [NullAllowed, Export("id")]
-    string Id { get; }
+    interface BSGBreadcrumbSink
+    {
+        [Abstract]
+        [Export("leaveBreadcrumbWithMessage:metadata:andType:")]
+        void LeaveBreadcrumb(
+            string message,
+            [NullAllowed] NSDictionary metadata,
+            BSGBreadcrumbType type
+        );
+    }
+
+    [BaseType(typeof(NSObject))]
+    interface BugsnagFeatureFlag
+    {
+        [Static]
+        [Export("flagWithName:")]
+        BugsnagFeatureFlag FlagWithName(string name);
+
+        [Static]
+        [Export("flagWithName:variant:")]
+        BugsnagFeatureFlag FlagWithName(string name, [NullAllowed] string variant);
+
+        [Export("name")]
+        string Name { get; }
+
+        [NullAllowed, Export("variant")]
+        string Variant { get; }
+    }
+
+    [BaseType(typeof(NSObject))]
+    interface BugsnagDevice
+    {
+        [Export("jailbroken")]
+        bool Jailbroken { get; set; }
+
+        [NullAllowed, Export("id", ArgumentSemantic.Copy)]
+        string Id { get; set; }
+
+        [NullAllowed, Export("locale", ArgumentSemantic.Copy)]
+        string Locale { get; set; }
+
+        [NullAllowed, Export("manufacturer", ArgumentSemantic.Copy)]
+        string Manufacturer { get; set; }
+
+        [NullAllowed, Export("model", ArgumentSemantic.Copy)]
+        string Model { get; set; }
+
+        [NullAllowed, Export("modelNumber", ArgumentSemantic.Copy)]
+        string ModelNumber { get; set; }
+
+        [NullAllowed, Export("osName", ArgumentSemantic.Copy)]
+        string OsName { get; set; }
 
-    [NullAllowed, Export("name")]
-    string Name { get; }
+        [NullAllowed, Export("osVersion", ArgumentSemantic.Copy)]
+        string OsVersion { get; set; }
 
-    [NullAllowed, Export("email")]
-    string Email { get; }
-}
+        [NullAllowed, Export("runtimeVersions", ArgumentSemantic.Copy)]
+        NSDictionary<NSString, NSString> RuntimeVersions { get; set; }
 
-[BaseType(typeof(NSObject))]
-interface BugsnagError
-{
-    [NullAllowed, Export("errorClass", ArgumentSemantic.Copy)]
-    string ErrorClass { get; set; }
+        [NullAllowed, Export("totalMemory", ArgumentSemantic.Strong)]
+        NSNumber TotalMemory { get; set; }
+    }
 
-    [NullAllowed, Export("errorMessage", ArgumentSemantic.Copy)]
-    string ErrorMessage { get; set; }
+    [BaseType(typeof(BugsnagDevice))]
+    interface BugsnagDeviceWithState
+    {
+        [Export("freeDisk", ArgumentSemantic.Strong)]
+        NSNumber FreeDisk { get; set; }
 
-    [Export("stacktrace", ArgumentSemantic.Copy)]
-    BugsnagStackframe[] Stacktrace { get; set; }
+        [Export("freeMemory", ArgumentSemantic.Strong)]
+        NSNumber FreeMemory { get; set; }
 
-    [Export("type", ArgumentSemantic.Assign)]
-    BSGErrorType Type { get; set; }
-}
+        [Export("orientation", ArgumentSemantic.Copy)]
+        string Orientation { get; set; }
 
-[BaseType(typeof(NSObject))]
-interface BugsnagApp
-{
-    [NullAllowed, Export("binaryArch", ArgumentSemantic.Copy)]
-    string BinaryArch { get; set; }
+        [Export("time", ArgumentSemantic.Strong)]
+        NSDate Time { get; set; }
+    }
 
-    [NullAllowed, Export("bundleVersion", ArgumentSemantic.Copy)]
-    string BundleVersion { get; set; }
+    [BaseType(typeof(NSObject))]
+    interface BugsnagUser
+    {
+        [NullAllowed, Export("id")]
+        string Id { get; }
 
-    [NullAllowed, Export("codeBundleId", ArgumentSemantic.Copy)]
-    string CodeBundleId { get; set; }
+        [NullAllowed, Export("name")]
+        string Name { get; }
 
-    [NullAllowed, Export("dsymUuid", ArgumentSemantic.Copy)]
-    string DsymUuid { get; set; }
+        [NullAllowed, Export("email")]
+        string Email { get; }
+    }
 
-    [NullAllowed, Export("id", ArgumentSemantic.Copy)]
-    string Id { get; set; }
+    [BaseType(typeof(NSObject))]
+    interface BugsnagError
+    {
+        [NullAllowed, Export("errorClass", ArgumentSemantic.Copy)]
+        string ErrorClass { get; set; }
 
-    [NullAllowed, Export("releaseStage", ArgumentSemantic.Copy)]
-    string ReleaseStage { get; set; }
+        [NullAllowed, Export("errorMessage", ArgumentSemantic.Copy)]
+        string ErrorMessage { get; set; }
 
-    [NullAllowed, Export("type", ArgumentSemantic.Copy)]
-    string Type { get; set; }
+        [Export("stacktrace", ArgumentSemantic.Copy)]
+        BugsnagStackframe[] Stacktrace { get; set; }
 
-    [NullAllowed, Export("version", ArgumentSemantic.Copy)]
-    string Version { get; set; }
-}
+        [Export("type", ArgumentSemantic.Assign)]
+        BSGErrorType Type { get; set; }
+    }
 
-[BaseType(typeof(NSObject))]
-interface BugsnagStackframe
-{
-    [NullAllowed, Export("method", ArgumentSemantic.Copy)]
-    string Method { get; set; }
+    [BaseType(typeof(NSObject))]
+    interface BugsnagApp
+    {
+        [NullAllowed, Export("binaryArch", ArgumentSemantic.Copy)]
+        string BinaryArch { get; set; }
 
-    [NullAllowed, Export("machoFile", ArgumentSemantic.Copy)]
-    string MachoFile { get; set; }
+        [NullAllowed, Export("bundleVersion", ArgumentSemantic.Copy)]
+        string BundleVersion { get; set; }
 
-    [NullAllowed, Export("machoUuid", ArgumentSemantic.Copy)]
-    string MachoUuid { get; set; }
+        [NullAllowed, Export("codeBundleId", ArgumentSemantic.Copy)]
+        string CodeBundleId { get; set; }
 
-    [NullAllowed, Export("frameAddress", ArgumentSemantic.Strong)]
-    NSNumber FrameAddress { get; set; }
+        [NullAllowed, Export("dsymUuid", ArgumentSemantic.Copy)]
+        string DsymUuid { get; set; }
 
-    [NullAllowed, Export("machoVmAddress", ArgumentSemantic.Strong)]
-    NSNumber MachoVmAddress { get; set; }
+        [NullAllowed, Export("id", ArgumentSemantic.Copy)]
+        string Id { get; set; }
 
-    [NullAllowed, Export("symbolAddress", ArgumentSemantic.Strong)]
-    NSNumber SymbolAddress { get; set; }
+        [NullAllowed, Export("releaseStage", ArgumentSemantic.Copy)]
+        string ReleaseStage { get; set; }
 
-    [NullAllowed, Export("machoLoadAddress", ArgumentSemantic.Strong)]
-    NSNumber MachoLoadAddress { get; set; }
+        [NullAllowed, Export("type", ArgumentSemantic.Copy)]
+        string Type { get; set; }
 
-    [Export("isPc")]
-    bool IsPc { get; set; }
+        [NullAllowed, Export("version", ArgumentSemantic.Copy)]
+        string Version { get; set; }
+    }
 
-    [Export("isLr")]
-    bool IsLr { get; set; }
+    [BaseType(typeof(NSObject))]
+    interface BugsnagStackframe
+    {
+        [NullAllowed, Export("method", ArgumentSemantic.Copy)]
+        string Method { get; set; }
 
-    [NullAllowed, Export("type", ArgumentSemantic.Copy)]
-    string Type { get; set; }
+        [NullAllowed, Export("machoFile", ArgumentSemantic.Copy)]
+        string MachoFile { get; set; }
 
-    [Static]
-    [Export("stackframesWithCallStackReturnAddresses:")]
-    BugsnagStackframe[] StackframesWithCallStackReturnAddresses(NSNumber[] callStackReturnAddresses);
+        [NullAllowed, Export("machoUuid", ArgumentSemantic.Copy)]
+        string MachoUuid { get; set; }
 
-    [Static]
-    [Export("stackframesWithCallStackSymbols:")]
-    BugsnagStackframe[] StackframesWithCallStackSymbols(string[] callStackSymbols);
-}
+        [NullAllowed, Export("frameAddress", ArgumentSemantic.Strong)]
+        NSNumber FrameAddress { get; set; }
 
-[BaseType(typeof(BugsnagApp))]
-interface BugsnagAppWithState
-{
-    [NullAllowed, Export("duration", ArgumentSemantic.Strong)]
-    NSNumber Duration { get; set; }
+        [NullAllowed, Export("machoVmAddress", ArgumentSemantic.Strong)]
+        NSNumber MachoVmAddress { get; set; }
 
-    [NullAllowed, Export("durationInForeground", ArgumentSemantic.Strong)]
-    NSNumber DurationInForeground { get; set; }
+        [NullAllowed, Export("symbolAddress", ArgumentSemantic.Strong)]
+        NSNumber SymbolAddress { get; set; }
 
-    [Export("inForeground")]
-    bool InForeground { get; set; }
+        [NullAllowed, Export("machoLoadAddress", ArgumentSemantic.Strong)]
+        NSNumber MachoLoadAddress { get; set; }
 
-    [Export("isLaunching")]
-    bool IsLaunching { get; set; }
-}
+        [Export("isPc")]
+        bool IsPc { get; set; }
 
-[BaseType(typeof(NSObject))]
-interface BugsnagThread
-{
-    [NullAllowed, Export("id", ArgumentSemantic.Copy)]
-    string Id { get; set; }
+        [Export("isLr")]
+        bool IsLr { get; set; }
 
-    [NullAllowed, Export("name", ArgumentSemantic.Copy)]
-    string Name { get; set; }
+        [NullAllowed, Export("type", ArgumentSemantic.Copy)]
+        string Type { get; set; }
 
-    [Export("errorReportingThread")]
-    bool ErrorReportingThread { get; }
+        [Static]
+        [Export("stackframesWithCallStackReturnAddresses:")]
+        BugsnagStackframe[] StackframesWithCallStackReturnAddresses(
+            NSNumber[] callStackReturnAddresses
+        );
 
-    [NullAllowed, Export("state", ArgumentSemantic.Copy)]
-    string State { get; set; }
+        [Static]
+        [Export("stackframesWithCallStackSymbols:")]
+        BugsnagStackframe[] StackframesWithCallStackSymbols(string[] callStackSymbols);
+    }
 
-    [Export("stacktrace", ArgumentSemantic.Copy)]
-    BugsnagStackframe[] Stacktrace { get; set; }
+    [BaseType(typeof(BugsnagApp))]
+    interface BugsnagAppWithState
+    {
+        [NullAllowed, Export("duration", ArgumentSemantic.Strong)]
+        NSNumber Duration { get; set; }
 
-    [Export("type", ArgumentSemantic.Assign)]
-    BSGThreadType Type { get; set; }
-}
+        [NullAllowed, Export("durationInForeground", ArgumentSemantic.Strong)]
+        NSNumber DurationInForeground { get; set; }
 
-[BaseType(typeof(NSObject))]
-interface BugsnagConfiguration
-{
-    [Static]
-    [Export("loadConfig")]
-    BugsnagConfiguration LoadConfig();
+        [Export("inForeground")]
+        bool InForeground { get; set; }
 
-    [Export("initWithApiKey:")]
-    IntPtr Constructor([NullAllowed] string apiKey);
+        [Export("isLaunching")]
+        bool IsLaunching { get; set; }
+    }
 
-    [Export("apiKey", ArgumentSemantic.Copy)]
-    string ApiKey { get; set; }
+    [BaseType(typeof(NSObject))]
+    interface BugsnagThread
+    {
+        [NullAllowed, Export("id", ArgumentSemantic.Copy)]
+        string Id { get; set; }
 
-    [NullAllowed, Export("releaseStage", ArgumentSemantic.Copy)]
-    string ReleaseStage { get; set; }
+        [NullAllowed, Export("name", ArgumentSemantic.Copy)]
+        string Name { get; set; }
 
-    [NullAllowed, Export("enabledReleaseStages", ArgumentSemantic.Copy)]
-    NSSet<NSString> EnabledReleaseStages { get; set; }
+        [Export("errorReportingThread")]
+        bool ErrorReportingThread { get; }
 
-    [NullAllowed, Export("redactedKeys", ArgumentSemantic.Copy)]
-    NSSet<NSObject> RedactedKeys { get; set; }
+        [NullAllowed, Export("state", ArgumentSemantic.Copy)]
+        string State { get; set; }
 
-    [NullAllowed, Export("discardClasses", ArgumentSemantic.Copy)]
-    NSSet<NSObject> DiscardClasses { get; set; }
+        [Export("stacktrace", ArgumentSemantic.Copy)]
+        BugsnagStackframe[] Stacktrace { get; set; }
 
-    [NullAllowed, Export("context", ArgumentSemantic.Copy)]
-    string Context { get; set; }
+        [Export("type", ArgumentSemantic.Assign)]
+        BSGThreadType Type { get; set; }
+    }
 
-    [NullAllowed, Export("appVersion", ArgumentSemantic.Copy)]
-    string AppVersion { get; set; }
+    [BaseType(typeof(NSObject))]
+    interface BugsnagConfiguration
+    {
+        [Static]
+        [Export("loadConfig")]
+        BugsnagConfiguration LoadConfig();
 
-    [Export("autoDetectErrors")]
-    bool AutoDetectErrors { get; set; }
+        [Export("initWithApiKey:")]
+        IntPtr Constructor([NullAllowed] string apiKey);
 
-    [Export("appHangThresholdMillis")]
-    nuint AppHangThresholdMillis { get; set; }
+        [Export("apiKey", ArgumentSemantic.Copy)]
+        string ApiKey { get; set; }
 
-    [Export("reportBackgroundAppHangs")]
-    bool ReportBackgroundAppHangs { get; set; }
+        [NullAllowed, Export("releaseStage", ArgumentSemantic.Copy)]
+        string ReleaseStage { get; set; }
 
-    [Export("autoTrackSessions")]
-    bool AutoTrackSessions { get; set; }
+        [NullAllowed, Export("enabledReleaseStages", ArgumentSemantic.Copy)]
+        NSSet<NSString> EnabledReleaseStages { get; set; }
 
-    [Export("launchDurationMillis")]
-    nuint LaunchDurationMillis { get; set; }
+        [NullAllowed, Export("redactedKeys", ArgumentSemantic.Copy)]
+        NSSet<NSObject> RedactedKeys { get; set; }
 
-    [Export("sendLaunchCrashesSynchronously")]
-    bool SendLaunchCrashesSynchronously { get; set; }
+        [NullAllowed, Export("discardClasses", ArgumentSemantic.Copy)]
+        NSSet<NSObject> DiscardClasses { get; set; }
 
-    [Export("attemptDeliveryOnCrash")]
-    bool AttemptDeliveryOnCrash { get; set; }
+        [NullAllowed, Export("context", ArgumentSemantic.Copy)]
+        string Context { get; set; }
 
-    [NullAllowed, Export("bundleVersion", ArgumentSemantic.Copy)]
-    string BundleVersion { get; set; }
+        [NullAllowed, Export("appVersion", ArgumentSemantic.Copy)]
+        string AppVersion { get; set; }
 
-    [NullAllowed, Export("appType", ArgumentSemantic.Copy)]
-    string AppType { get; set; }
+        [Export("autoDetectErrors")]
+        bool AutoDetectErrors { get; set; }
 
-    [Export("maxPersistedEvents")]
-    nuint MaxPersistedEvents { get; set; }
+        [Export("appHangThresholdMillis")]
+        nuint AppHangThresholdMillis { get; set; }
 
-    [Export("maxPersistedSessions")]
-    nuint MaxPersistedSessions { get; set; }
+        [Export("reportBackgroundAppHangs")]
+        bool ReportBackgroundAppHangs { get; set; }
 
-    [Export("maxBreadcrumbs")]
-    nuint MaxBreadcrumbs { get; set; }
+        [Export("autoTrackSessions")]
+        bool AutoTrackSessions { get; set; }
 
-    [Export("maxStringValueLength")]
-    nuint MaxStringValueLength { get; set; }
+        [Export("launchDurationMillis")]
+        nuint LaunchDurationMillis { get; set; }
 
-    [Export("persistUser")]
-    bool PersistUser { get; set; }
+        [Export("sendLaunchCrashesSynchronously")]
+        bool SendLaunchCrashesSynchronously { get; set; }
 
-    [Export("user", ArgumentSemantic.Strong)]
-    BugsnagUser User { get; }
+        [Export("attemptDeliveryOnCrash")]
+        bool AttemptDeliveryOnCrash { get; set; }
 
-    [Export("setUser:withEmail:andName:")]
-    void SetUser([NullAllowed] string userId, [NullAllowed] string email, [NullAllowed] string name);
+        [NullAllowed, Export("bundleVersion", ArgumentSemantic.Copy)]
+        string BundleVersion { get; set; }
 
-    [Export("addOnSessionBlock:")]
-    NSObject AddOnSessionBlock(Func<BugsnagSession, bool> block);
+        [NullAllowed, Export("appType", ArgumentSemantic.Copy)]
+        string AppType { get; set; }
 
-    [Export("removeOnSession:")]
-    void RemoveOnSession(NSObject callback);
+        [Export("maxPersistedEvents")]
+        nuint MaxPersistedEvents { get; set; }
 
-    [Export("addOnSendErrorBlock:")]
-    NSObject AddOnSendErrorBlock(Func<BugsnagEvent, bool> block);
+        [Export("maxPersistedSessions")]
+        nuint MaxPersistedSessions { get; set; }
 
-    [Export("removeOnSendError:")]
-    void RemoveOnSendError(NSObject callback);
+        [Export("maxBreadcrumbs")]
+        nuint MaxBreadcrumbs { get; set; }
 
-    [Export("addOnBreadcrumbBlock:")]
-    NSObject AddOnBreadcrumbBlock(Func<BugsnagBreadcrumb, bool> block);
+        [Export("maxStringValueLength")]
+        nuint MaxStringValueLength { get; set; }
 
-    [Export("removeOnBreadcrumb:")]
-    void RemoveOnBreadcrumb(NSObject callback);
-}
+        [Export("persistUser")]
+        bool PersistUser { get; set; }
 
-[BaseType(typeof(NSObject))]
-interface BugsnagSession
-{
-    [Export("id", ArgumentSemantic.Copy)]
-    string Id { get; set; }
+        [Export("user", ArgumentSemantic.Strong)]
+        BugsnagUser User { get; }
 
-    [Export("startedAt", ArgumentSemantic.Strong)]
-    NSDate StartedAt { get; set; }
+        [Export("setUser:withEmail:andName:")]
+        void SetUser(
+            [NullAllowed] string userId,
+            [NullAllowed] string email,
+            [NullAllowed] string name
+        );
 
-    [Export("app", ArgumentSemantic.Strong)]
-    BugsnagApp App { get; }
+        [Export("addOnSessionBlock:")]
+        NSObject AddOnSessionBlock(Func<BugsnagSession, bool> block);
 
-    [Export("device", ArgumentSemantic.Strong)]
-    BugsnagDevice Device { get; }
+        [Export("removeOnSession:")]
+        void RemoveOnSession(NSObject callback);
 
-    [Export("user", ArgumentSemantic.Strong)]
-    BugsnagUser User { get; }
+        [Export("addOnSendErrorBlock:")]
+        NSObject AddOnSendErrorBlock(Func<BugsnagEvent, bool> block);
 
-    [Export("setUser:withEmail:andName:")]
-    void SetUser([NullAllowed] string userId, [NullAllowed] string email, [NullAllowed] string name);
-}
+        [Export("removeOnSendError:")]
+        void RemoveOnSendError(NSObject callback);
 
+        [Export("addOnBreadcrumbBlock:")]
+        NSObject AddOnBreadcrumbBlock(Func<BugsnagBreadcrumb, bool> block);
 
+        [Export("removeOnBreadcrumb:")]
+        void RemoveOnBreadcrumb(NSObject callback);
+    }
+
+    [BaseType(typeof(NSObject))]
+    interface BugsnagSession
+    {
+        [Export("id", ArgumentSemantic.Copy)]
+        string Id { get; set; }
+
+        [Export("startedAt", ArgumentSemantic.Strong)]
+        NSDate StartedAt { get; set; }
+
+        [Export("app", ArgumentSemantic.Strong)]
+        BugsnagApp App { get; }
+
+        [Export("device", ArgumentSemantic.Strong)]
+        BugsnagDevice Device { get; }
+
+        [Export("user", ArgumentSemantic.Strong)]
+        BugsnagUser User { get; }
+
+        [Export("setUser:withEmail:andName:")]
+        void SetUser(
+            [NullAllowed] string userId,
+            [NullAllowed] string email,
+            [NullAllowed] string name
+        );
+    }
 
     [BaseType(typeof(NSObject))]
     interface BugsnagClient
@@ -540,7 +565,11 @@ interface BugsnagSession
         void LeaveBreadcrumbForNotificationName(string notificationName);
 
         [Export("leaveBreadcrumbWithMessage:metadata:andType:")]
-        void LeaveBreadcrumb(string message, [NullAllowed] NSDictionary metadata, BSGBreadcrumbType type);
+        void LeaveBreadcrumb(
+            string message,
+            [NullAllowed] NSDictionary metadata,
+            BSGBreadcrumbType type
+        );
 
         [Export("leaveNetworkRequestBreadcrumbForTask:metrics:")]
         void LeaveNetworkRequestBreadcrumb(NSUrlSessionTask task, NSUrlSessionTaskMetrics metrics);
@@ -576,14 +605,18 @@ interface BugsnagSession
         BugsnagUser User { get; }
 
         [Export("setUser:withEmail:andName:")]
-        void SetUser([NullAllowed] string userId, [NullAllowed] string email, [NullAllowed] string name);
+        void SetUser(
+            [NullAllowed] string userId,
+            [NullAllowed] string email,
+            [NullAllowed] string name
+        );
 
         [Export("addOnBreadcrumbBlock:")]
         NSObject AddOnBreadcrumbBlock(Func<BugsnagBreadcrumb, bool> block);
 
         [Export("removeOnBreadcrumb:")]
         void RemoveOnBreadcrumb(NSObject callback);
-}
+    }
 
     [BaseType(typeof(NSObject))]
     interface BugsnagLastRunInfo
@@ -597,5 +630,4 @@ interface BugsnagSession
         [Export("crashedDuringLaunch")]
         bool CrashedDuringLaunch { get; }
     }
-    
 }

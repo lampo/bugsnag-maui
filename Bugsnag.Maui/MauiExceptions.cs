@@ -35,7 +35,8 @@ internal static class MauiExceptions
 
         global::Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser += (sender, args) =>
         {
-            UnhandledException?.Invoke(sender!,
+            UnhandledException?.Invoke(
+                sender!,
                 new UnhandledExceptionEventArgs(args.Exception, true)
             );
         };

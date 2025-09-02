@@ -18,19 +18,21 @@ public partial class BugsnagMaui : Object, IOnSendCallback
     private readonly TransformBugsnagEventDelegate? transform;
     private readonly BugsnagWrapper client = new();
 
-    public static readonly HashSet<string> NativeCrashSignals = new()
-    {
-        "SIGSEGV", // Segmentation fault
-        "SIGABRT", // Abort signal
-        "SIGBUS", // Bus error
-        "SIGFPE", // Floating point exception
-        "SIGILL", // Illegal instruction
-        "SIGTRAP", // Trace/breakpoint trap
-        "SIGKILL", // Kill signal
-        "SIGTERM", // Termination signal
-        "SIGQUIT", // Quit signal
-        "SIGSYS" // Bad system call
-    };
+    public static readonly HashSet<string> NativeCrashSignals =
+        new()
+        {
+            "SIGSEGV", // Segmentation fault
+            "SIGABRT", // Abort signal
+            "SIGBUS", // Bus error
+            "SIGFPE", // Floating point exception
+            "SIGILL", // Illegal instruction
+            "SIGTRAP", // Trace/breakpoint trap
+            "SIGKILL", // Kill signal
+            "SIGTERM", // Termination signal
+            "SIGQUIT", // Quit signal
+            "SIGSYS" // Bad system call
+            ,
+        };
 
     public BugsnagMaui(AndroidConfiguration config, TransformBugsnagEventDelegate? transform)
     {
@@ -43,7 +45,8 @@ public partial class BugsnagMaui : Object, IOnSendCallback
 
     public bool OnSend(Event bugsnagEvent)
     {
-        var context = Platform.CurrentActivity?.ApplicationContext ?? global::Android.App.Application.Context;
+        var context =
+            Platform.CurrentActivity?.ApplicationContext ?? global::Android.App.Application.Context;
         var crashDirPath = Path.Combine(context.FilesDir?.AbsolutePath ?? "", "crashes");
         var error = bugsnagEvent.Errors?.FirstOrDefault();
 
@@ -55,7 +58,9 @@ public partial class BugsnagMaui : Object, IOnSendCallback
             return false;
         }
 
-        if (!NativeCrashSignals.Contains(error?.ErrorClass ?? "") || !Directory.Exists(crashDirPath))
+        if (
+            !NativeCrashSignals.Contains(error?.ErrorClass ?? "") || !Directory.Exists(crashDirPath)
+        )
         {
             return ProcessTransform(bugsnagEvent);
         }
@@ -82,7 +87,8 @@ public partial class BugsnagMaui : Object, IOnSendCallback
                 File.Delete(latestCrashFile);
 
                 Debug.WriteLine(
-                    $"[Bugsnag crash Handler] Added saved crash report to Bugsnag event from: {Path.GetFileName(latestCrashFile)}");
+                    $"[Bugsnag crash Handler] Added saved crash report to Bugsnag event from: {Path.GetFileName(latestCrashFile)}"
+                );
             }
         }
         catch (Exception ex)
@@ -136,9 +142,11 @@ public partial class BugsnagMaui : Object, IOnSendCallback
 
     public void LeaveBreadcrumb(string message, Dictionary<string, object> metadata)
     {
-        AndroidBugsnag.LeaveBreadcrumb(message,
+        AndroidBugsnag.LeaveBreadcrumb(
+            message,
             ConvertJavaDictionary(metadata),
-            AndroidBreadcrumbType.State!);
+            AndroidBreadcrumbType.State!
+        );
     }
 
     private partial void PlatformNotify(Dictionary<string, object> report, bool unhandled)
@@ -186,7 +194,7 @@ public partial class BugsnagMaui : Object, IOnSendCallback
             double doubleValue => Java.Lang.Double.ValueOf(doubleValue),
             bool boolValue => Java.Lang.Boolean.ValueOf(boolValue),
             string stringValue => new Java.Lang.String(stringValue),
-            _ => throw new ArgumentException($"Unsupported type: {value.GetType()}")
+            _ => throw new ArgumentException($"Unsupported type: {value.GetType()}"),
         };
     }
 
@@ -279,7 +287,7 @@ public partial class BugsnagMaui : Object, IOnSendCallback
     {
         return transform == null || transform(BugsnagEvent.FromNativeEvent(bugsnagEvent));
     }
-    
+
     private long ExtractTimestamp(string filePath)
     {
         var match = TimeStampRegex.Match(filePath);
@@ -289,8 +297,7 @@ public partial class BugsnagMaui : Object, IOnSendCallback
         }
         return 0;
     }
-    
-    [GeneratedRegex(@"crash_(\d+)\.txt"
-        , RegexOptions.Compiled)]
+
+    [GeneratedRegex(@"crash_(\d+)\.txt", RegexOptions.Compiled)]
     private partial Regex TimeStampRegex { get; }
 }

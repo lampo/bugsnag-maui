@@ -17,16 +17,15 @@ public partial record BugsnagEvent
         get => NativeEvent.Context;
         set => NativeEvent.GroupingHash = value!;
     }
-    
+
     public static BugsnagEvent FromNativeEvent(NativeBugsnagEvent bugsnagEvent)
     {
         return new BugsnagEvent
         {
             NativeEvent = bugsnagEvent,
-            Errors = bugsnagEvent.Errors.Select(e => new BugsnagError
-                {
-                    NativeError = e
-                }).ToList()
+            Errors = bugsnagEvent
+                .Errors.Select(e => new BugsnagError { NativeError = e })
+                .ToList()
                 .AsReadOnly(),
         };
     }

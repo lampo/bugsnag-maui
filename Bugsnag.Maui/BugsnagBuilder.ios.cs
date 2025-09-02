@@ -10,8 +10,7 @@ public partial class BugsnagBuilder
 
         var config = new BugsnagConfiguration(apiKey);
         config.AutoDetectErrors = autoDetectErrors;
-        config.LaunchDurationMillis =
-            (uint?)launchDurationMillis ?? config.LaunchDurationMillis;
+        config.LaunchDurationMillis = (uint?)launchDurationMillis ?? config.LaunchDurationMillis;
         config.ReleaseStage = releaseStage.ToString().ToLowerInvariant();
         config.AttemptDeliveryOnCrash = attemptDeliveryOnCrash;
 
