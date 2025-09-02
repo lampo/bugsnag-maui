@@ -46,4 +46,8 @@
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui.NativeLibraryInterop.BuildTasks" Version="0.0.1-pre1" PrivateAssets="all" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Native\" />
+	</ItemGroup>
 </Project>
