@@ -12,7 +12,6 @@
         <IsTrimmable>false</IsTrimmable>
         <LangVersion>preview</LangVersion>
 
-
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.0</SupportedOSPlatformVersion>
         <TargetPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">18.0</TargetPlatformVersion>
@@ -34,6 +33,10 @@
         <PackageProjectUrl>https://github.com/lampo/bugsnag-maui</PackageProjectUrl>
         <RepositoryUrl>https://github.com/lampo/bugsnag-maui</RepositoryUrl>
         <PackageTags>bugsang crash-reporting maui</PackageTags>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' AND '$(TargetPlatformIdentifier)' == 'android' ">
+        <RuntimeIdentifiers>android-arm;android-arm64;android-x64</RuntimeIdentifiers>
     </PropertyGroup>
 
     <!-- point to local projects in debug -->

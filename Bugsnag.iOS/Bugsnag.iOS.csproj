@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net9.0-ios</TargetFramework>
+        <TargetFramework>net8.0-ios</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>true</ImplicitUsings>
         <IsBindingProject>true</IsBindingProject>
@@ -9,7 +9,7 @@
           <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <TargetPlatformVersion>18.0</TargetPlatformVersion>
         
-        <Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.swift-sdk-version').Trim()).0</Version>
+        <Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.swift-sdk-version').Trim()).1</Version>
         <Authors>Zach Dean</Authors>
         <Company>Ramsey Solutions</Company>
         <Copyright>Copyright Ramsey Solutions. All rights reserved.</Copyright>
@@ -21,13 +21,9 @@
 
     <Target Name="Check XCFramework" BeforeTargets="_BuildXcodeProjectsForiOS">
         <Message Text="Check Native Libraries" Importance="high" />
-<!--        <Exec-->
-<!--                Command="[[ ! -d '../native/BugsnagBinding/Bugsnag.xcframework' ]] &amp;&amp; '../scripts/download-xcframeworks.sh' || '../scripts/check-xcframeworks.sh'"-->
-<!--                Condition=" '$(OS)' != 'Windows_NT' "-->
-<!--        />-->
         <Error Condition=" '$(OS)' == 'Windows_NT' " Text="Building on Windows is not supported." />
     </Target>
-
+    
     <ItemGroup>
         <ObjcBindingApiDefinition Include="ApiDefinitions.cs" />
         <ObjcBindingCoreSource Include="StructsAndEnums.cs" />

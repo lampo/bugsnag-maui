@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>Bugsnag.Android</RootNamespace>
 		
-		<Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.maven-sdk-version').Trim()).1</Version>
+		<Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\.maven-sdk-version').Trim()).2</Version>
 		<Authors>Zach Dean</Authors>
         <Company>Ramsey Solutions</Company>
         <Copyright>Copyright Ramsey Solutions. All rights reserved.</Copyright>
@@ -14,6 +14,10 @@
         <PackageProjectUrl>https://github.com/lampo/bugsnag-maui</PackageProjectUrl>
         <RepositoryUrl>https://github.com/lampo/bugsnag-maui</RepositoryUrl>
 		<PackageTags>bugsang crash-reporting maui</PackageTags>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<RuntimeIdentifiers>android-arm;android-arm64;android-x64</RuntimeIdentifiers>
 	</PropertyGroup>
 
 	<Target Name="CheckMavenArtifact" BeforeTargets="Build">
