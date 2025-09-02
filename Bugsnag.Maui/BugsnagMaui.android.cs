@@ -74,7 +74,7 @@ public partial class BugsnagMaui : Object, IOnSendCallback
 
             // Get the most recent crash file
             var latestCrashFile = crashFiles
-                .Where(e => Math.Abs(ExtractTimestamp(e) - when) < 15)
+                .Where(e => Math.Abs(ExtractTimestamp(e) - when) < 1000)
                 .OrderByDescending(File.GetLastWriteTimeUtc)
                 .FirstOrDefault();
 
