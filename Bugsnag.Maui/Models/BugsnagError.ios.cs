@@ -10,9 +10,9 @@ public partial record BugsnagError
         init
         {
             field = value;
-            StackTrace = value.Stacktrace?
-                .Select(s => s.Method ?? "<unknown>")
-                .ToList().AsReadOnly() ?? new List<string>().AsReadOnly();
+            StackTrace =
+                value.Stacktrace?.Select(s => s.Method ?? "<unknown>").ToList().AsReadOnly()
+                ?? new List<string>().AsReadOnly();
         }
     }
 

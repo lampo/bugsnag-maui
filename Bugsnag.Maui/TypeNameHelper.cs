@@ -24,7 +24,7 @@ internal class TypeNameHelper
         { typeof(string), "string" },
         { typeof(uint), "uint" },
         { typeof(ulong), "ulong" },
-        { typeof(ushort), "ushort" }
+        { typeof(ushort), "ushort" },
     };
 
     public static string GetTypeDisplayName(object item, bool fullName = true)

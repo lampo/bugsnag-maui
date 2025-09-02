@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using Java.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Java.IO;
 using static Android.Systems.Os;
 
 namespace Bugsnag.Maui;
@@ -19,19 +19,19 @@ internal partial class AndroidRedirectStdToLogCat
     // a fatal error in the mono runtime or one of the native libraries
     // used by your application.
     // ================================================================
-    // 
+    //
     // No native Android stacktrace (see debuggerd output).
-    // 
+    //
     // ================================================================
     // Basic Fault Address Reporting
     // ================================================================
     // Memory around native instruction pointer (0x7bd510b73c):
     // 0x7bd510b72c  00 00 80 3d a1 00 9f 3c c0 03 5f d6 c2 00 18 36  ...=...<......6
     // 0x7bd510b73c  26 00 40 f9 87 80 5f f8 06 00 00 f9 a7 80 1f f8  &.@............
-    // 0x7bd510b74c  c0 03 5f d6 c2 00 10 36 26 00 40 b9 88 c0 5f b8  ......6&.@.... 
+    // 0x7bd510b74c  c0 03 5f d6 c2 00 10 36 26 00 40 b9 88 c0 5f b8  ......6&.@....
     // 0x7bd510b75c  06 00 00 b9 a8 c0 1f b8 c0 03 5f d6 02 01 00 b4  ...............
     // ================================================================
-    // 
+    //
     // ================================================================
     // Managed Stacktrace:
     // ================================================================
@@ -48,9 +48,9 @@ internal partial class AndroidRedirectStdToLogCat
     // at Android.Runtime.JNINativeWrapper:Wrap_JniMarshal_PPL_V <0x00053>
     // at Android.Runtime.JNINativeWrapper:Wrap_JniMarshal_PPL_V <0x00067>
     // ================================================================
-    // 
+    //
     // Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x0
-    // 
+    //
     private static Thread? thread;
 
     private static bool IsStarted => thread is not null;
@@ -63,9 +63,11 @@ internal partial class AndroidRedirectStdToLogCat
     {
         try
         {
-            if (IsStarted) return;
+            if (IsStarted)
+                return;
 
-            var pipe = Pipe() ?? throw new Exception("Could not create pipe for stdout redirection.");
+            var pipe =
+                Pipe() ?? throw new Exception("Could not create pipe for stdout redirection.");
             var pipeReader = pipe[0];
             var pipeWriter = pipe[1];
 
@@ -94,7 +96,8 @@ internal partial class AndroidRedirectStdToLogCat
     /// </summary>
     private static void ThreadLoop(object? state)
     {
-        if (state is not ThreadParameters parameters) return;
+        if (state is not ThreadParameters parameters)
+            return;
 
         try
         {
@@ -155,7 +158,8 @@ internal partial class AndroidRedirectStdToLogCat
                         else if (!skipNextDelimiter)
                         {
                             stackTraceBuilder.AppendLine(line);
-                            if (!string.IsNullOrWhiteSpace(line)) stackTraceLineCount++;
+                            if (!string.IsNullOrWhiteSpace(line))
+                                stackTraceLineCount++;
                         }
                     }
 
@@ -202,9 +206,12 @@ internal partial class AndroidRedirectStdToLogCat
     {
         try
         {
-            var context = Platform.CurrentActivity?.ApplicationContext ?? global::Android.App.Application.Context;
+            var context =
+                Platform.CurrentActivity?.ApplicationContext
+                ?? global::Android.App.Application.Context;
             var crashDir = new Java.IO.File(context.FilesDir, "crashes");
-            if (!crashDir.Exists()) crashDir.Mkdirs();
+            if (!crashDir.Exists())
+                crashDir.Mkdirs();
 
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var crashFile = new Java.IO.File(crashDir, $"crash_{timestamp}.txt");
@@ -229,9 +236,12 @@ internal partial class AndroidRedirectStdToLogCat
     {
         try
         {
-            var context = Platform.CurrentActivity?.ApplicationContext ?? global::Android.App.Application.Context;
+            var context =
+                Platform.CurrentActivity?.ApplicationContext
+                ?? global::Android.App.Application.Context;
             var crashDirPath = Path.Combine(context.FilesDir?.AbsolutePath ?? "", "crashes");
-            if (!Directory.Exists(crashDirPath)) return;
+            if (!Directory.Exists(crashDirPath))
+                return;
 
             const int maxFiles = 10;
             const long maxTotalBytes = 512 * 1024;
@@ -246,26 +256,34 @@ internal partial class AndroidRedirectStdToLogCat
                 {
                     var fi = new FileInfo(path);
                     var ts = ExtractTimestamp(fi.Name);
-                    var effectiveTs = ts > 0 ? ts : new DateTimeOffset(fi.LastWriteTimeUtc).ToUnixTimeMilliseconds();
+                    var effectiveTs =
+                        ts > 0
+                            ? ts
+                            : new DateTimeOffset(fi.LastWriteTimeUtc).ToUnixTimeMilliseconds();
                     return new
                     {
                         Path = path,
                         Info = fi,
                         TimestampMs = effectiveTs,
                         AgeMs = nowMs - effectiveTs,
-                        Length = fi.Exists ? fi.Length : 0L
+                        Length = fi.Exists ? fi.Length : 0L,
                     };
                 })
                 .Where(x => x.Info.Exists)
                 .OrderBy(x => x.TimestampMs)
                 .ToList();
 
-            if (items.Count == 0) return;
+            if (items.Count == 0)
+                return;
 
             bool IsRecent(long ageMs) => ageMs < safetyWindowMs;
 
             // Pass 1: remove files older than retention (skip recent files)
-            foreach (var item in items.Where(x => !IsRecent(x.AgeMs) && x.AgeMs > retention.TotalMilliseconds).ToList())
+            foreach (
+                var item in items
+                    .Where(x => !IsRecent(x.AgeMs) && x.AgeMs > retention.TotalMilliseconds)
+                    .ToList()
+            )
             {
                 TryDelete(item.Path);
                 items.Remove(item);
@@ -276,9 +294,15 @@ internal partial class AndroidRedirectStdToLogCat
             {
                 var overBy = items.Count - maxFiles;
                 // Prefer deleting non-recent oldest first
-                foreach (var item in items.Where(x => !IsRecent(x.AgeMs)).OrderBy(x => x.TimestampMs).ToList())
+                foreach (
+                    var item in items
+                        .Where(x => !IsRecent(x.AgeMs))
+                        .OrderBy(x => x.TimestampMs)
+                        .ToList()
+                )
                 {
-                    if (overBy <= 0) break;
+                    if (overBy <= 0)
+                        break;
                     if (TryDelete(item.Path))
                     {
                         items.Remove(item);
@@ -289,8 +313,10 @@ internal partial class AndroidRedirectStdToLogCat
                 // Still over? delete oldest regardless
                 foreach (var item in items.OrderBy(x => x.TimestampMs).ToList())
                 {
-                    if (items.Count <= maxFiles) break;
-                    if (TryDelete(item.Path)) items.Remove(item);
+                    if (items.Count <= maxFiles)
+                        break;
+                    if (TryDelete(item.Path))
+                        items.Remove(item);
                 }
             }
 
@@ -298,9 +324,15 @@ internal partial class AndroidRedirectStdToLogCat
             var totalBytes = items.Sum(x => x.Length);
             if (totalBytes > maxTotalBytes)
             {
-                foreach (var item in items.Where(x => !IsRecent(x.AgeMs)).OrderBy(x => x.TimestampMs).ToList())
+                foreach (
+                    var item in items
+                        .Where(x => !IsRecent(x.AgeMs))
+                        .OrderBy(x => x.TimestampMs)
+                        .ToList()
+                )
                 {
-                    if (totalBytes <= maxTotalBytes) break;
+                    if (totalBytes <= maxTotalBytes)
+                        break;
                     if (TryDelete(item.Path))
                     {
                         totalBytes -= item.Length;
@@ -310,7 +342,8 @@ internal partial class AndroidRedirectStdToLogCat
 
                 foreach (var item in items.OrderBy(x => x.TimestampMs).ToList())
                 {
-                    if (totalBytes <= maxTotalBytes) break;
+                    if (totalBytes <= maxTotalBytes)
+                        break;
                     if (TryDelete(item.Path))
                     {
                         totalBytes -= item.Length;
@@ -335,7 +368,9 @@ internal partial class AndroidRedirectStdToLogCat
             }
             catch (Exception delEx)
             {
-                Debug.WriteLine($"[Bugsnag crash cleanup] Failed to delete {path}: {delEx.Message}");
+                Debug.WriteLine(
+                    $"[Bugsnag crash cleanup] Failed to delete {path}: {delEx.Message}"
+                );
                 return false;
             }
         }

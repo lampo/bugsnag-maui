@@ -10,9 +10,10 @@ namespace SampleApp
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseBugsnag(bugsnag => bugsnag
-                    .WithApiKey("4fa1861e2c0ed84146c19c8cf248a53a")
-                    .WithReleaseStage(ReleaseStage.Local)
+                .UseBugsnag(bugsnag =>
+                    bugsnag
+                        .WithApiKey("4fa1861e2c0ed84146c19c8cf248a53a")
+                        .WithReleaseStage(ReleaseStage.Local)
                 )
                 .ConfigureFonts(fonts =>
                 {

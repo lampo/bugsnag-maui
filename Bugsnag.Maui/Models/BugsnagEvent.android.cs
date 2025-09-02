@@ -23,10 +23,9 @@ public partial record BugsnagEvent
         return new BugsnagEvent
         {
             NativeEvent = bugsnagEvent,
-            Errors = bugsnagEvent.Errors.Select(e => new BugsnagError
-                {
-                    NativeError = e
-                }).ToList()
+            Errors = bugsnagEvent
+                .Errors.Select(e => new BugsnagError { NativeError = e })
+                .ToList()
                 .AsReadOnly(),
         };
     }
