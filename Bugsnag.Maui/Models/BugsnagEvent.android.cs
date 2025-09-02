@@ -15,7 +15,7 @@ public partial record BugsnagEvent
     public partial string? Context
     {
         get => NativeEvent.Context;
-        set => NativeEvent.GroupingHash = value!;
+        set => NativeEvent.Context = value!;
     }
 
     public static BugsnagEvent FromNativeEvent(NativeBugsnagEvent bugsnagEvent)
